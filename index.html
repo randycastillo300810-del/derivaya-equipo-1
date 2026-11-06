@@ -1,11 +1,132 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>DerivaYa</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>DerivaYa — Entrenador de Derivadas</title>
+
+  <!-- Fuentes -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet" />
+
+  <link rel="stylesheet" href="css/styles.css" />
 </head>
 <body>
-    <h1>DerivaYa - Proyecto 1</h1>
-</body>
-</html>
+
+  <!-- ================= BARRA SUPERIOR ================= -->
+  <header class="topbar">
+    <div class="topbar-container">
+      
+      <!-- Izquierda: Logo + Racha + Puntaje -->
+      <div class="topbar-left">
+        <div class="logo">
+          <div class="logo-icon">f'</div>
+          <div class="logo-text">
+            <div class="logo-title">DerivaYa</div>
+            <div class="logo-sub">Nivel 1 · Polinomios</div>
+          </div>
+        </div>
+
+        <div class="pill pill-streak">
+          <span class="icon-fire">🔥</span>
+          <strong>0</strong>
+        </div>
+
+        <div class="pill pill-score">
+          <span class="icon-star">★</span>
+          <span>Pts: <strong>0</strong></span>
+          <span class="record-text">(Récord 0)</span>
+        </div>
+      </div>
+
+      <!-- Derecha: Selector de niveles y acciones -->
+      <div class="topbar-right">
+        <button class="lvl-tab active">1. Polinomios</button>
+        <button class="lvl-tab">2. Trig / Exp</button>
+        <button class="lvl-tab">🔍 Verificar Criterios</button>
+      </div>
+
+    </div>
+  </header>
+
+  <!-- ================= CONTENIDO PRINCIPAL ================= -->
+  <main class="main-layout">
+
+    <!-- COLUMNA IZQUIERDA: TARJETA DEL EJERCICIO -->
+    <section class="card card-left">
+      
+      <div class="card-header-row">
+        <div class="level-info">
+          <span class="badge-level">Nivel 1: Polinomios</span>
+          <span class="function-count">Función #1/5</span>
+        </div>
+        <button class="btn-gray btn-sm">🔀 Otra al azar</button>
+      </div>
+
+      <p class="section-label">CALCULA LA PRIMERA DERIVADA DE:</p>
+
+      <!-- Recuadro de la función f(x) -->
+      <div class="formula-display-box">
+        <span class="formula-prefix">f(x) =</span>
+        <span class="formula-math">x<sup>3</sup> &minus; 3x</span>
+      </div>
+
+      <!-- Etiqueta del campo de texto -->
+      <div class="input-label-row">
+        <label for="inputDerivada">
+          Escribe tu derivada <span class="green-mono">f'(x)</span>:
+        </label>
+        <span class="input-hint">Acepta <code>sen</code> o <code>sin</code></span>
+      </div>
+
+      <!-- Caja de entrada -->
+      <div class="input-wrapper">
+        <span class="input-prefix">f'(x) =</span>
+        <input
+          id="inputDerivada"
+          type="text"
+          placeholder="Ej: 3x^2 - 3   ó   3(x^2 - 1)"
+        />
+        <button class="btn-clear" title="Limpiar">✕</button>
+      </div>
+
+      <!-- Barra de vista previa -->
+      <div class="preview-box">
+        <span class="preview-label">Vista previa:</span>
+        <span class="preview-content">Escribe una expresión...</span>
+      </div>
+
+      <!-- Atajos de teclado matematico -->
+      <div class="keypad-section">
+        <p class="keypad-title">Atajos de teclado matemático:</p>
+        <div class="keypad-grid">
+          <button type="button" class="key-btn">x²</button>
+          <button type="button" class="key-btn">x³</button>
+          <button type="button" class="key-btn">^</button>
+          <button type="button" class="key-btn">sen()</button>
+          <button type="button" class="key-btn">cos()</button>
+          <button type="button" class="key-btn">sec²()</button>
+
+          <button type="button" class="key-btn">eˣ</button>
+          <button type="button" class="key-btn">e^(x²)</button>
+          <button type="button" class="key-btn">ln()</button>
+          <button type="button" class="key-btn">(</button>
+          <button type="button" class="key-btn">)</button>
+          <button type="button" class="key-btn">/</button>
+        </div>
+      </div>
+
+      <!-- Botones de acción inferiores -->
+      <div class="action-buttons-row">
+        <button type="button" class="btn-green btn-main-action">✓ Corregir Derivada</button>
+        <button type="button" class="btn-amber">💡 Pista (-3)</button>
+        <button type="button" class="btn-gray">Siguiente →</button>
+      </div>
+
+    </section>
+
+    <!-- COLUMNA DERECHA: VISUALIZADOR GEOMÉTRICO -->
+    <section class="card card-right">
+      
+      <div class="graph-header">
+        <h2 class="graph-title">
+          <span class="graph-icon">Visualizador</span>  

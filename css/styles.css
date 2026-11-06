@@ -1,11 +1,227 @@
+/* ================= VARIABLES Y RESET ================= */
 :root {
-  --color-primario: #2563eb;
-  --color-fondo: #f8fafc;
-  --color-texto: #1e293b;
-  --fuente-principal: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  --bg-page: #302E2B;
+  --bg-card: #262421;
+  --bg-box: #1F1E1B;
+  --bg-control: #3B3936;
+  --border-subtle: #3B3936;
+  --border-light: #4A4844;
+
+  --text-main: #E7E6E4;
+  --text-muted: #9E9C98;
+
+  --chess-green: #81B64C;
+  --chess-green-shadow: #537A2A;
+  --chess-green-hover: #8CC354;
+
+  --amber: #F59E0B;
+  --blue: #3B82F6;
+  --emerald: #10B981;
+  --pink: #FB7185;
 }
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
 body {
-  background-color: var(--color-fondo);
-  color: var(--color-texto);
-  font-family: var(--fuente-principal);
+  background-color: var(--bg-page);
+  color: var(--text-main);
+  font-family: 'Inter', sans-serif;
+  min-height: 100vh;
+  padding-bottom: 84px;
 }
+
+code {
+  font-family: 'JetBrains Mono', monospace;
+}
+
+/* ================= BARRA SUPERIOR ================= */
+.topbar {
+  background-color: var(--bg-card);
+  border-bottom: 1px solid var(--border-subtle);
+  padding: 12px 28px;
+  position: sticky;
+  top: 0;
+  z-index: 20;
+}
+
+.topbar-container {
+  max-width: 1320px;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 16px;
+}
+
+.topbar-left {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.logo {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.logo-icon {
+  width: 40px;
+  height: 40px;
+  border-radius: 10px;
+  background-color: var(--chess-green);
+  box-shadow: 0 3px 0 var(--chess-green-shadow);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'JetBrains Mono', monospace;
+  font-weight: 700;
+  font-size: 18px;
+  color: #FFFFFF;
+}
+
+.logo-title {
+  font-size: 18px;
+  font-weight: 800;
+  color: #FFFFFF;
+  line-height: 1.1;
+}
+
+.logo-title span {
+  color: var(--chess-green);
+}
+
+
+.pill {
+  background-color: var(--bg-page);
+  border: 1px solid var(--border-light);
+  border-radius: 999px;
+  padding: 6px 14px;
+  font-size: 13px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.icon-star {
+  color: var(--amber);
+}
+
+.record-text {
+  color: var(--text-muted);
+  font-size: 12px;
+}
+
+.topbar-right {
+  background-color: var(--bg-page);
+  border: 1px solid var(--border-subtle);
+  border-radius: 12px;
+  padding: 6px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.lvl-tab {
+  background: transparent;
+  border: none;
+  color: var(--text-muted);
+  font-size: 12px;
+  font-weight: 600;
+  padding: 7px 12px;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.lvl-tab.active {
+  background-color: var(--bg-control);
+  color: #FFFFFF;
+}
+
+/* BOTONES */
+.btn-green {
+  background-color: var(--chess-green);
+  color: #FFFFFF;
+  border: none;
+  border-radius: 10px;
+  font-weight: 700;
+  box-shadow: 0 4px 0 var(--chess-green-shadow);
+  cursor: pointer;
+  transition: transform 0.1s ease, background-color 0.15s ease;
+}
+
+.btn-green:hover {
+  background-color: var(--chess-green-hover);
+}
+
+.btn-green:active {
+  transform: translateY(2px);
+  box-shadow: 0 2px 0 var(--chess-green-shadow);
+}
+
+.btn-gray {
+  background-color: var(--bg-control);
+  color: #D6D5D3;
+  border: 1px solid var(--border-light);
+  border-radius: 10px;
+  font-weight: 600;
+  box-shadow: 0 3px 0 #1A1917;
+  cursor: pointer;
+}
+
+.btn-amber {
+  background-color: #443722;
+  color: #F5B749;
+  border: 1px solid #755825;
+  border-radius: 10px;
+  font-weight: 700;
+  box-shadow: 0 4px 0 #261E11;
+  cursor: pointer;
+}
+
+.btn-sm {
+  padding: 7px 12px;
+  font-size: 12px;
+}
+
+/* ================= LAYOUT PRINCIPAL ================= */
+.main-layout {
+  max-width: 1320px;
+  margin: 24px auto;
+  padding: 0 24px;
+  display: grid;
+  grid-template-columns: 5fr 7fr;
+  gap: 24px;
+  align-items: start;
+}
+
+.card {
+  background-color: var(--bg-card);
+  border: 1px solid var(--border-subtle);
+  border-radius: 18px;
+  padding: 24px;
+  box-shadow: 0 12px 28px rgba(0, 0, 0, 0.28);
+}
+
+/* ================= COLUMNA IZQUIERDA ================= */
+.card-header-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 16px;
+}
+
+.level-info {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.badge-level {
+  background-color: #2E2B40
+} 

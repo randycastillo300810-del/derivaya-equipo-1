@@ -26,12 +26,18 @@
   padding: 0;
 }
 
+/* Ocultar tanto por atributo [hidden] como por clase .hidden */
+[hidden],
+.hidden {
+  display: none !important;
+}
+
 body {
   background-color: var(--bg-page);
   color: var(--text-main);
-  font-family: 'Inter', sans-serif;
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
   min-height: 100vh;
-  padding-bottom: 84px;
+  padding-bottom: 88px;
 }
 
 code {
@@ -42,7 +48,7 @@ code {
 .topbar {
   background-color: var(--bg-card);
   border-bottom: 1px solid var(--border-subtle);
-  padding: 12px 28px;
+  padding: 12px 24px;
   position: sticky;
   top: 0;
   z-index: 20;
@@ -59,8 +65,11 @@ code {
 }
 
 .topbar-left {
+  width: 100%;
   display: flex;
   align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
   gap: 14px;
 }
 
@@ -96,6 +105,12 @@ code {
   color: var(--chess-green);
 }
 
+#subtitulo-nivel {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--chess-green);
+  margin-top: 2px;
+}
 
 .pill {
   background-color: var(--bg-page);
@@ -105,7 +120,14 @@ code {
   font-size: 13px;
   display: flex;
   align-items: center;
-  gap: 6px;
+  gap: 12px;
+}
+
+#indicador-racha,
+#indicador-puntaje {
+  display: flex;
+  align-items: center;
+  gap: 5px;
 }
 
 .icon-star {
@@ -117,14 +139,14 @@ code {
   font-size: 12px;
 }
 
-.topbar-right {
+#selector-niveles-superior {
   background-color: var(--bg-page);
   border: 1px solid var(--border-subtle);
   border-radius: 12px;
-  padding: 6px;
+  padding: 5px;
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 6px;
 }
 
 .lvl-tab {
@@ -136,6 +158,11 @@ code {
   padding: 7px 12px;
   border-radius: 8px;
   cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.lvl-tab:hover {
+  color: #FFFFFF;
 }
 
 .lvl-tab.active {
@@ -143,25 +170,32 @@ code {
   color: #FFFFFF;
 }
 
-/* BOTONES */
+/* ================= BOTONES ESTILO CHESS.COM ================= */
 .btn-green {
   background-color: var(--chess-green);
   color: #FFFFFF;
   border: none;
   border-radius: 10px;
+  padding: 12px 16px;
+  font-size: 13px;
   font-weight: 700;
   box-shadow: 0 4px 0 var(--chess-green-shadow);
   cursor: pointer;
   transition: transform 0.1s ease, background-color 0.15s ease;
 }
 
-.btn-green:hover {
+.btn-green:hover:not(:disabled) {
   background-color: var(--chess-green-hover);
 }
 
-.btn-green:active {
+.btn-green:active:not(:disabled) {
   transform: translateY(2px);
   box-shadow: 0 2px 0 var(--chess-green-shadow);
+}
+
+.btn-green:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
 }
 
 .btn-gray {
@@ -169,9 +203,16 @@ code {
   color: #D6D5D3;
   border: 1px solid var(--border-light);
   border-radius: 10px;
+  padding: 12px 14px;
+  font-size: 13px;
   font-weight: 600;
   box-shadow: 0 3px 0 #1A1917;
   cursor: pointer;
+}
+
+.btn-gray:hover {
+  background-color: #464340;
+  color: #FFFFFF;
 }
 
 .btn-amber {
@@ -179,9 +220,15 @@ code {
   color: #F5B749;
   border: 1px solid #755825;
   border-radius: 10px;
+  padding: 12px 14px;
+  font-size: 13px;
   font-weight: 700;
   box-shadow: 0 4px 0 #261E11;
   cursor: pointer;
+}
+
+.btn-amber:hover {
+  background-color: #524228;
 }
 
 .btn-sm {
@@ -189,15 +236,11 @@ code {
   font-size: 12px;
 }
 
-/* ================= LAYOUT PRINCIPAL ================= */
+/* ================= CONTENEDOR PRINCIPAL Y PANTALLAS ================= */
 .main-layout {
   max-width: 1320px;
   margin: 24px auto;
   padding: 0 24px;
-  display: grid;
-  grid-template-columns: 5fr 7fr;
-  gap: 24px;
-  align-items: start;
 }
 
 .card {
@@ -208,12 +251,33 @@ code {
   box-shadow: 0 12px 28px rgba(0, 0, 0, 0.28);
 }
 
-/* ================= COLUMNA IZQUIERDA ================= */
+/* PANTALLA 2: ENTRENADOR (2 COLUMNAS: EJERCICIO IZQ + GRÁFICA DER) */
+#pantalla-ejercicio {
+  display: grid;
+  grid-template-columns: 5fr 7fr;
+  gap: 24px;
+  align-items: start;
+  background: transparent;
+  border: none;
+  padding: 0;
+  box-shadow: none;
+}
+
+#panel-ejercicio,
+#panel-grafica {
+  background-color: var(--bg-card);
+  border: 1px solid var(--border-subtle);
+  border-radius: 18px;
+  padding: 24px;
+  box-shadow: 0 12px 28px rgba(0, 0, 0, 0.28);
+}
+
 .card-header-row {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-bottom: 16px;
+  gap: 12px;
+  margin-bottom: 14px;
 }
 
 .level-info {
@@ -222,6 +286,463 @@ code {
   gap: 10px;
 }
 
-.badge-level {
-  background-color: #2E2B40
-} 
+#etiqueta-nivel {
+  background-color: #2E2B40;
+  color: var(--chess-green);
+  border: 1px solid #484366;
+  font-size: 12px;
+  font-weight: 600;
+  padding: 4px 10px;
+  border-radius: 6px;
+}
+
+#contador-funcion {
+  font-size: 12px;
+  color: var(--text-muted);
+}
+
+/* Barra de progreso */
+.progress-bar-track {
+  width: 100%;
+  height: 8px;
+  background-color: var(--bg-box);
+  border-radius: 999px;
+  overflow: hidden;
+  margin-bottom: 16px;
+  border: 1px solid var(--border-subtle);
+}
+
+.progress-bar-fill {
+  height: 100%;
+  width: 20%;
+  background-color: var(--chess-green);
+  border-radius: 999px;
+  transition: width 0.35s ease;
+}
+
+#panel-ejercicio > p {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  margin-bottom: 10px;
+}
+
+/* Caja de la función f(x) */
+#caja-enunciado {
+  background-color: var(--bg-box);
+  border: 1px solid #353330;
+  border-radius: 14px;
+  min-height: 108px;
+  padding: 20px;
+  margin-bottom: 18px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+}
+
+#caja-enunciado > span {
+  font-family: 'JetBrains Mono', monospace;
+  font-weight: 700;
+  font-size: 20px;
+  color: var(--chess-green);
+}
+
+#enunciado-funcion {
+  font-size: 26px;
+  font-weight: 700;
+  color: #FFFFFF;
+  font-family: 'JetBrains Mono', monospace;
+}
+
+/* Fila de etiqueta e intentos */
+#panel-ejercicio > div:nth-of-type(2) {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 8px;
+  font-size: 12px;
+  margin-bottom: 8px;
+}
+
+#panel-ejercicio label strong {
+  color: var(--chess-green);
+  font-family: 'JetBrains Mono', monospace;
+}
+
+#indicador-intentos {
+  background-color: var(--bg-page);
+  border: 1px solid var(--border-light);
+  color: var(--amber);
+  font-weight: 600;
+  padding: 2px 8px;
+  border-radius: 6px;
+  margin-right: 6px;
+}
+
+/* Contenedor de entrada MathLive */
+#contenedor-input {
+  background-color: var(--bg-box);
+  border: 1px solid #3E3C38;
+  border-radius: 12px;
+  padding: 8px 12px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+#contenedor-input:focus-within {
+  border-color: var(--chess-green);
+  box-shadow: 0 0 0 3px rgba(129, 182, 76, 0.2);
+}
+
+#contenedor-input > span {
+  font-family: 'JetBrains Mono', monospace;
+  font-weight: 700;
+  font-size: 14px;
+  color: var(--chess-green);
+  white-space: nowrap;
+}
+
+math-field#respuesta {
+  flex: 1;
+  width: 100%;
+  background: transparent;
+  color: var(--text-main);
+  border: none;
+  font-size: 16px;
+  padding: 6px 4px;
+  outline: none;
+}
+
+/* Vista previa */
+#caja-vista-previa {
+  background-color: var(--bg-box);
+  border: 1px solid #32302D;
+  border-radius: 10px;
+  padding: 10px 14px;
+  margin-bottom: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 12px;
+}
+
+#caja-vista-previa > span {
+  color: var(--text-muted);
+}
+
+#vista-previa-derivada {
+  font-family: 'JetBrains Mono', monospace;
+  color: #D6D5D3;
+}
+
+/* Teclado matemático */
+#seccion-teclado {
+  margin-bottom: 18px;
+}
+
+#seccion-teclado > p {
+  font-size: 12px;
+  color: var(--text-muted);
+  margin-bottom: 8px;
+}
+
+#teclado-matematico {
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  gap: 8px;
+}
+
+#teclado-matematico button {
+  background-color: var(--bg-control);
+  color: var(--text-main);
+  border: 1px solid var(--border-light);
+  border-radius: 8px;
+  padding: 8px 4px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 12px;
+  box-shadow: 0 3px 0 #1A1917;
+  cursor: pointer;
+  transition: background-color 0.12s ease;
+}
+
+#teclado-matematico button:hover {
+  background-color: #464340;
+  color: #FFFFFF;
+}
+
+#teclado-matematico button:active {
+  transform: translateY(2px);
+  box-shadow: 0 1px 0 #1A1917;
+}
+
+/* Botones de acción (Comprobar, Pista, Siguiente) */
+#botones-accion {
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr;
+  gap: 10px;
+}
+
+/* ================= PANEL DERECHO: GRÁFICA JSXGRAPH ================= */
+#panel-grafica header {
+  margin-bottom: 12px;
+}
+
+#panel-grafica header h2 {
+  font-size: 17px;
+  font-weight: 700;
+  color: #FFFFFF;
+  margin-bottom: 4px;
+}
+
+#panel-grafica header p {
+  font-size: 12px;
+  color: var(--text-muted);
+}
+
+#panel-grafica header strong {
+  color: var(--amber);
+}
+
+#lectura-glider {
+  display: inline-flex;
+  align-items: center;
+  background-color: var(--bg-box);
+  border: 1px solid #383633;
+  border-radius: 999px;
+  padding: 6px 14px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 12px;
+  color: var(--amber);
+  margin-bottom: 12px;
+}
+
+#leyenda-grafica {
+  list-style: none;
+  background-color: var(--bg-box);
+  border: 1px solid #353330;
+  border-radius: 12px;
+  padding: 10px 14px;
+  margin-bottom: 14px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px 18px;
+  font-size: 12px;
+}
+
+#leyenda-grafica li {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+#leyenda-grafica li::before {
+  content: "";
+  display: inline-block;
+  width: 14px;
+  height: 3px;
+  border-radius: 2px;
+}
+
+#leyenda-grafica li:nth-child(1)::before {
+  background-color: var(--blue);
+}
+
+#leyenda-grafica li:nth-child(2)::before {
+  background-color: var(--amber);
+}
+
+#leyenda-grafica li:nth-child(3)::before {
+  background-color: var(--emerald);
+}
+
+#leyenda-grafica li:nth-child(4)::before {
+  background-color: var(--pink);
+}
+
+#box {
+  width: 100%;
+  height: 420px;
+  background-color: var(--bg-box) !important;
+  border: 1px solid var(--border-subtle) !important;
+  border-radius: 14px !important;
+}
+
+/* ================= PANTALLAS DE INICIO, FÓRMULAS Y RESULTADOS ================= */
+#avance-nivel {
+  font-size: 13px;
+  color: var(--text-muted);
+  margin-bottom: 16px;
+}
+
+#catalogo-banco {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 12px;
+}
+
+#pantalla-formulas > div {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 16px;
+  margin-top: 12px;
+}
+
+#pantalla-formulas article {
+  background-color: var(--bg-box);
+  border: 1px solid var(--border-subtle);
+  border-radius: 12px;
+  padding: 16px;
+}
+
+#pantalla-formulas h3 {
+  font-size: 14px;
+  color: var(--chess-green);
+  margin-bottom: 10px;
+}
+
+#pantalla-formulas ul {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 13px;
+}
+
+#resumen-ronda {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 12px;
+  margin-bottom: 18px;
+}
+
+#resumen-ronda p {
+  background-color: var(--bg-box);
+  border: 1px solid var(--border-subtle);
+  border-radius: 12px;
+  padding: 14px;
+  font-size: 13px;
+}
+
+#botones-resultados {
+  display: flex;
+  gap: 12px;
+  margin-top: 18px;
+}
+
+/* ================= RETROALIMENTACIÓN ================= */
+#contenedor-retroalimentacion {
+  padding: 12px 14px;
+  border-radius: 10px;
+  margin-top: 14px;
+  font-size: 13px;
+}
+
+#contenedor-retroalimentacion.correcto {
+  color: var(--emerald);
+  border-left: 4px solid var(--emerald);
+  background: rgba(16, 185, 129, 0.12);
+}
+
+#contenedor-retroalimentacion.incorrecto {
+  color: var(--pink);
+  border-left: 4px solid var(--pink);
+  background: rgba(251, 113, 133, 0.12);
+}
+
+/* ================= ANIMACIÓN DE ACIERTO ================= */
+@keyframes aciertoPulse {
+  0% {
+    transform: scale(1);
+    box-shadow: 0 4px 0 var(--chess-green-shadow), 0 0 0 0 var(--chess-green);
+  }
+  50% {
+    transform: scale(1.04);
+    box-shadow: 0 4px 0 var(--chess-green-shadow), 0 0 0 12px rgba(129, 182, 76, 0.35);
+  }
+  100% {
+    transform: scale(1);
+    box-shadow: 0 4px 0 var(--chess-green-shadow), 0 0 0 0 var(--chess-green);
+  }
+}
+
+.animacion-acierto {
+  animation: aciertoPulse 0.6s ease-out;
+}
+
+/* ================= BARRA DE NAVEGACIÓN INFERIOR ================= */
+#navegacion-inferior {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background-color: var(--bg-box);
+  border-top: 1px solid #353330;
+  padding: 8px 16px;
+  z-index: 30;
+  display: grid;
+  grid-template-columns: repeat(4, minmax(60px, 120px));
+  justify-content: center;
+  gap: 8px;
+}
+
+#navegacion-inferior button {
+  background: transparent;
+  border: none;
+  color: var(--text-muted);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  padding: 4px 0;
+  font-size: 11px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+#navegacion-inferior button:hover,
+#navegacion-inferior button.active {
+  color: var(--chess-green);
+}
+
+/* ================= RESPONSIVE (MÓVIL 360px Y TABLET) ================= */
+@media (max-width: 980px) {
+  #pantalla-ejercicio {
+    grid-template-columns: 1fr;
+  }
+
+  #box {
+    height: 340px;
+  }
+}
+
+@media (max-width: 480px) {
+  .main-layout {
+    padding: 0 12px;
+    margin: 14px auto;
+  }
+
+  #panel-ejercicio,
+  #panel-grafica,
+  .card {
+    padding: 16px;
+  }
+
+  #teclado-matematico {
+    grid-template-columns: repeat(4, 1fr);
+  }
+
+  #botones-accion {
+    grid-template-columns: 1fr;
+  }
+
+  #box {
+    height: 270px;
+  }
+}

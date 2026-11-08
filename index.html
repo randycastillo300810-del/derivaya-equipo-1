@@ -5,146 +5,281 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>DerivaYa — Entrenador de Derivadas</title>
 
-  <!-- Fuentes -->
-<link rel="stylesheet" href="libs/jsxgraph/jsxgraph.css">
-<link rel="stylesheet" href="css/styles.css" />
+  <!-- CDN: JSXGraph CSS -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/jsxgraph/distrib/jsxgraph.css" />
+  <!-- CDN: MathLive CSS -->
+  <link rel="stylesheet" href="https://unpkg.com/mathlive/dist/mathlive.css" />
+
+  <!-- Hoja de estilos principal -->
+  <link rel="stylesheet" href="css/styles.css" />
 </head>
 <body>
 
-  <!-- BARRA SUPERIOR -->
-  <header class="topbar">
+  <!-- ================= BARRA SUPERIOR ================= -->
+  <header class="topbar" id="barra-superior">
     <div class="topbar-container">
-      
-      <!-- Izquierda: Logo + Racha + Puntaje -->
       <div class="topbar-left">
-        <div class="logo">
-          <div class="logo-icon">f'</div>
-          <div class="logo-text">
-            <div class="logo-title">DerivaYa</div>
-            <div class="logo-sub">Nivel 1 · Polinomios</div>
+        <!-- Identidad de la aplicación -->
+        <div id="marca" class="logo">
+          <div id="logo-icono" class="logo-icon">f'</div>
+          <div>
+            <h1 class="logo-title">Deriva<span>Ya</span></h1>
+            <p id="subtitulo-nivel">Nivel 1 · Polinomios</p>
           </div>
         </div>
 
-        <div class="pill pill-streak">
-          <span class="icon-fire">🔥</span>
-          <strong>0</strong>
+        <!-- Indicadores de progreso rápido -->
+        <div id="indicadores-estado" class="pill">
+          <div id="indicador-racha">
+            <span class="icon-star">🔥</span>
+            <strong id="valor-racha">0</strong>
+          </div>
+
+          <div id="indicador-puntaje">
+            <span class="icon-star">★</span>
+            <span>Pts: <strong id="valor-puntaje">0</strong></span>
+            <span class="record-text">(Récord <span id="valor-record">0</span>)</span>
+          </div>
         </div>
 
-        <div class="pill pill-score">
-          <span class="icon-star">★</span>
-          <span>Pts: <strong>0</strong></span>
-          <span class="record-text">(Récord 0)</span>
-        </div>
+        <!-- Selector rápido de niveles -->
+        <nav id="selector-niveles-superior" aria-label="Niveles de dificultad">
+          <button type="button" id="btn-nivel-1" data-nivel="1" class="lvl-tab active">1. Polinomios</button>
+          <button type="button" id="btn-nivel-2" data-nivel="2" class="lvl-tab">2. Trig / Exp</button>
+          <button type="button" id="btn-nivel-3" data-nivel="3" class="lvl-tab">3. Cadena</button>
+        </nav>
       </div>
-
-      <!-- Derecha: Selector de niveles y acciones -->
-      <div class="topbar-right">
-        <button class="lvl-tab active">1. Polinomios</button>
-        <button class="lvl-tab">2. Trig / Exp</button>
-        <button class="lvl-tab">🔍 Verificar Criterios</button>
-      </div>
-
+      <div class="topbar-right"></div>
     </div>
   </header>
 
-  <!-- CONTENIDO PRINCIPAL-->
-  <main class="main-layout">
+  <!-- ================= CONTENIDO PRINCIPAL ================= -->
+  <main id="contenedor-principal" class="main-layout">
 
-    <!-- COLUMNA IZQUIERDA: TARJETA DEL EJERCICIO -->
-    <section class="card card-left">
-      
-      <div class="card-header-row">
-        <div class="level-info">
-          <span class="badge-level">Nivel 1: Polinomios</span>
-          <span class="function-count">Función #1/5</span>
+    <!-- ================= PANTALLA 2: EJERCICIO / ENTRENADOR ================= -->
+    <section id="pantalla-ejercicio" class="vista-entrenador card hidden">
+
+      <!-- Columna izquierda: Ejercicio y entrada de respuesta -->
+      <article id="panel-ejercicio">
+        <header class="card-header-row">
+          <div class="level-info">
+            <span id="etiqueta-nivel">Nivel 1: Polinomios</span>
+            <span id="contador-funcion">Función #1/5</span>
+          </div>
+          <button type="button" id="btn-otra-azar" class="btn-gray btn-sm">🔀 Otra al azar</button>
+        </header>
+
+        <!-- Barra de progreso del nivel -->
+        <div id="barra-progreso-contenedor" class="progress-bar-track">
+          <div id="barra-progreso-relleno" class="progress-bar-fill"></div>
         </div>
-        <button class="btn-gray btn-sm"> Otra al azar</button>
-      </div>
 
-      <p class="section-label">CALCULA LA PRIMERA DERIVADA DE:</p>
+        <p>CALCULA LA PRIMERA DERIVADA DE:</p>
 
-      <!-- Recuadro de la función f(x) -->
-      <div class="formula-display-box">
-        <span class="formula-prefix">f(x) =</span>
-        <span class="formula-math">x<sup>3</sup> - 3x</span>
-      </div>
-
-      <!-- Etiqueta del campo de texto -->
-      <div class="input-label-row">
-        <label for="inputDerivada">
-          Escribe tu derivada <span class="green-mono">f'(x)</span>:
-        </label>
-        <span class="input-hint">Acepta <code>sen</code> o <code>sin</code></span>
-      </div>
-
-      <!-- Caja de entrada -->
-      <div class="input-wrapper">
-        <span class="input-prefix">f'(x) =</span>
-        <input
-          id="inputDerivada"
-          type="text"
-          placeholder="Ej: 3x^2 - 3   ó   3(x^2 - 1)"
-        />
-        <button class="btn-clear" title="Limpiar">✕</button>
-      </div>
-
-      <!-- Barra de vista previa -->
-      <div class="preview-box">
-        <span class="preview-label">Vista previa:</span>
-        <span class="preview-content">Escribe una expresión...</span>
-      </div>
-
-      <!-- Atajos de teclado matematico -->
-      <div class="keypad-section">
-        <p class="keypad-title">Atajos de teclado matemático:</p>
-        <div class="keypad-grid">
-          <button type="button" class="key-btn">x²</button>
-          <button type="button" class="key-btn">x³</button>
-          <button type="button" class="key-btn">^</button>
-          <button type="button" class="key-btn">sen()</button>
-          <button type="button" class="key-btn">cos()</button>
-          <button type="button" class="key-btn">sec²()</button>
-
-          <button type="button" class="key-btn">eˣ</button>
-          <button type="button" class="key-btn">e^(x²)</button>
-          <button type="button" class="key-btn">ln()</button>
-          <button type="button" class="key-btn">(</button>
-          <button type="button" class="key-btn">)</button>
-          <button type="button" class="key-btn">/</button>
+        <!-- Enunciado de la función f(x) -->
+        <div id="caja-enunciado">
+          <span>f(x) =</span>
+          <output id="enunciado-funcion">x^3 - 3x</output>
         </div>
-      </div>
 
-      <!-- Botones de acción inferiores -->
-      <div class="action-buttons-row">
-        <button type="button" class="btn-green btn-main-action">✓ Corregir Derivada</button>
-        <button type="button" class="btn-amber">💡 Pista (-3)</button>
-        <button type="button" class="btn-gray">Siguiente →</button>
-      </div>
+        <!-- Información del campo de respuesta e intentos -->
+        <div>
+          <label for="respuesta">Escribe tu derivada <strong>f'(x)</strong>:</label>
+          <div>
+            <span id="indicador-intentos">Intentos: 2/2</span>
+            <span>Acepta <code>sen</code> o <code>sin</code></span>
+          </div>
+        </div>
+
+        <!-- Campo de entrada del estudiante (MathLive) -->
+        <div id="contenedor-input">
+          <span>f'(x) =</span>
+          <math-field id="respuesta"
+            placeholder="Ej: 3x^2 - 3   ó   3(x^2 - 1)"
+            virtual-keyboard-toggle="false"
+          ></math-field>
+          <button type="button" id="btn-limpiar" class="btn-gray btn-sm" title="Limpiar entrada">✕</button>
+        </div>
+
+        <!-- Vista previa de la expresión -->
+        <div id="caja-vista-previa">
+          <span>Vista previa:</span>
+          <output id="vista-previa-derivada">Escribe una expresión...</output>
+        </div>
+
+        <!-- Teclado matemático de apoyo -->
+        <div id="seccion-teclado">
+          <p>Atajos de teclado matemático:</p>
+          <div id="teclado-matematico">
+            <button type="button" data-token="^2">x²</button>
+            <button type="button" data-token="^3">x³</button>
+            <button type="button" data-token="^">^</button>
+            <button type="button" data-token="sen()">sen()</button>
+            <button type="button" data-token="cos()">cos()</button>
+            <button type="button" data-token="sec^2()">sec²()</button>
+            <button type="button" data-token="e^x">eˣ</button>
+            <button type="button" data-token="e^(x^2)">e^(x²)</button>
+            <button type="button" data-token="ln()">ln()</button>
+            <button type="button" data-token="(">(</button>
+            <button type="button" data-token=")">)</button>
+            <button type="button" data-token="/">/</button>
+          </div>
+        </div>
+
+        <!-- Botones de acción del ejercicio -->
+        <div id="botones-accion">
+          <button type="button" id="comprobar" class="btn-green" disabled>✓ Comprobar</button>
+          <button type="button" id="btn-pista" class="btn-amber">💡 Pista (-3)</button>
+          <button type="button" id="btn-siguiente" class="btn-gray">Siguiente →</button>
+        </div>
+
+        <!-- Mensajes de corrección y pistas -->
+        <div id="contenedor-retroalimentacion" role="status" aria-live="polite" hidden></div>
+      </article>
+
+      <!-- Columna derecha: Visualizador geométrico JSXGraph -->
+      <article id="panel-grafica">
+        <header>
+          <h2>📈 Visualizador Geométrico de la Derivada</h2>
+          <p>
+            Pista visual: Arrastra el punto naranja <strong>P</strong> sobre <code>f(x)</code> para explorar su recta tangente y su pendiente.
+          </p>
+        </header>
+
+        <!-- Lectura en vivo del punto deslizable (glider) -->
+        <div id="lectura-glider">
+          <span id="coordenadas-glider">x = 1.00 | m = f'(x) = 0.00</span>
+        </div>
+
+        <!-- Leyenda de curvas -->
+        <ul id="leyenda-grafica">
+          <li>Función <code>f(x)</code></li>
+          <li>Pista: Glider + Recta Tangente</li>
+          <li>Derivada Correcta <code>f'(x)</code></li>
+          <li>Tu Derivada <code>g(x)</code></li>
+        </ul>
+
+        <!-- Contenedor del tablero JSXGraph -->
+        <div id="box"></div>
+      </article>
 
     </section>
 
-<!-- COLUMNA DERECHA: VISUALIZADOR GEOMÉTRICO -->
-    <section class="card card-right">
-      
-      <div class="graph-header">
-        <h2 class="graph-title">
-          <span class="graph-icon">📈</span> Visualizador Geométrico
-        </h2>
+    <!-- ================= PANTALLA 1: INICIO / NIVELES ================= -->
+    <section id="pantalla-inicio" class="vista-niveles card">
+      <header class="card-header-row">
+        <h2>Entrenador de Derivadas</h2>
+        <p>Elige un nivel para comenzar</p>
+      </header>
+      <p id="avance-nivel">Avance: 0 / 5 funciones completadas</p>
+
+      <div id="catalogo-banco">
+        <button type="button" id="btn-iniciar-nivel-1" class="btn-green btn-sm" data-nivel="1">
+          Nivel 1 · Polinomios
+        </button>
+        <button type="button" id="btn-iniciar-nivel-2" class="btn-green btn-sm" data-nivel="2">
+          Nivel 2 · Trigonométricas y Exponenciales
+        </button>
+        <button type="button" id="btn-iniciar-nivel-3" class="btn-green btn-sm" data-nivel="3">
+          Nivel 3 · Regla de la Cadena
+        </button>
+      </div>
+    </section>
+
+    <!-- ================= PANTALLA 4: FÓRMULAS ================= -->
+    <section id="pantalla-formulas" class="vista-formulas card hidden">
+      <header class="card-header-row">
+        <h2>Formulario y Reglas de Derivación</h2>
+        <p>Consulta rápida por nivel</p>
+      </header>
+
+      <div>
+        <article>
+          <h3>Nivel 1 · Polinomios</h3>
+          <ul>
+            <li>d/dx [c] = 0</li>
+            <li>d/dx [x^n] = n · x^(n-1)</li>
+            <li>d/dx [c · f(x)] = c · f'(x)</li>
+          </ul>
+        </article>
+
+        <article>
+          <h3>Nivel 2 · Trigonométricas y Exponenciales</h3>
+          <ul>
+            <li>d/dx [sen(x)] = cos(x)</li>
+            <li>d/dx [cos(x)] = -sen(x)</li>
+            <li>d/dx [tan(x)] = sec^2(x)</li>
+            <li>d/dx [e^x] = e^x</li>
+            <li>d/dx [ln(x)] = 1/x</li>
+          </ul>
+        </article>
+
+        <article>
+          <h3>Nivel 3 · Regla de la Cadena</h3>
+          <p>d/dx [f(g(x))] = f'(g(x)) · g'(x)</p>
+          <p>Ejemplo: d/dx [sen(x²)] = 2x · cos(x²)</p>
+        </article>
+
+        <article>
+          <h3>Interpretación Geométrica</h3>
+          <p>
+            La derivada <code>f'(x)</code> en un punto es la pendiente de la recta tangente a la gráfica de <code>f(x)</code> en ese punto. Arrastra el punto P en el visualizador para observar cómo varía la pendiente.
+          </p>
+        </article>
+      </div>
+    </section>
+
+    <!-- ================= PANTALLA 3: RESULTADOS Y RÉCORD ================= -->
+    <section id="pantalla-resultados" class="vista-progreso card hidden">
+      <header class="card-header-row">
+        <h2>Resultados de la Ronda</h2>
+        <button type="button" id="btn-reiniciar-record" class="btn-gray btn-sm">Reiniciar Récord</button>
+      </header>
+
+      <div id="resumen-ronda">
+        <p id="puntaje-final">Puntaje final: <strong id="valor-puntaje-final">0</strong></p>
+        <p id="racha-final">Racha de aciertos: <strong id="valor-racha-final">0</strong></p>
+        <p id="record-final">Récord histórico: <strong id="valor-record-final">0</strong></p>
       </div>
 
-      <!-- Contenedor del tablero JSXGraph -->
-      <div id="jxgbox" class="jxgbox" style="width:100%; height:400px;"></div>
+      <div id="lista-historial">
+        <p>Aún no has respondido ejercicios en esta sesión.</p>
+      </div>
 
+      <div id="botones-resultados">
+        <button type="button" id="btn-volver-jugar" class="btn-green">Volver a Jugar</button>
+        <button type="button" id="btn-cambiar-nivel" class="btn-gray">Cambiar de Nivel</button>
+      </div>
     </section>
 
   </main>
 
-  <!-- LIBRERÍAS EXTERNAS (CARGADAS LOCALMENTE) -->
-  <script src="libs/compute-engine.min.js"></script>
-  <script src="libs/jsxgraphcore.js"></script>
+  <!-- ================= BARRA DE NAVEGACIÓN INFERIOR ================= -->
+  <nav id="navegacion-inferior" aria-label="Navegación principal">
+    <button type="button" id="nav-entrenador" data-vista="entrenador">
+      <span>🛠️</span>
+      <span>Entrenador</span>
+    </button>
+    <button type="button" id="nav-niveles" data-vista="niveles">
+      <span>📚</span>
+      <span>Niveles</span>
+    </button>
+    <button type="button" id="nav-formulas" data-vista="formulas">
+      <span>📖</span>
+      <span>Fórmulas</span>
+    </button>
+    <button type="button" id="nav-progreso" data-vista="progreso">
+      <span>🏆</span>
+      <span>Progreso</span>
+    </button>
+  </nav>
 
-  <!-- SCRIPT PRINCIPAL DEL PROYECTO -->
+  <!-- ================= LIBRERÍAS POR CDN Y MÓDULO PRINCIPAL ================= -->
+  <!-- JSXGraph core (expone window.JXG) -->
+  <script src="https://cdn.jsdelivr.net/npm/jsxgraph/distrib/jsxgraphcore.js"></script>
+  <!-- MathLive (expone window.MathLive y el elemento <math-field>) -->
+  <script src="https://unpkg.com/mathlive"></script>
+  <!-- Módulo principal de la aplicación (importa Compute Engine desde https://esm.run/@cortex-js/compute-engine) -->
   <script type="module" src="js/main.js"></script>
-
 </body>
 </html>

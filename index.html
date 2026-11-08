@@ -6,13 +6,12 @@
   <title>DerivaYa — Entrenador de Derivadas</title>
 
   <!-- Fuentes -->
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet" />
-
-  <link rel="stylesheet" href="css/styles.css" />
+<link rel="stylesheet" href="libs/jsxgraph/jsxgraph.css">
+<link rel="stylesheet" href="css/styles.css" />
 </head>
 <body>
 
-  <!-- ================= BARRA SUPERIOR ================= -->
+  <!-- BARRA SUPERIOR -->
   <header class="topbar">
     <div class="topbar-container">
       
@@ -48,7 +47,7 @@
     </div>
   </header>
 
-  <!-- ================= CONTENIDO PRINCIPAL ================= -->
+  <!-- CONTENIDO PRINCIPAL-->
   <main class="main-layout">
 
     <!-- COLUMNA IZQUIERDA: TARJETA DEL EJERCICIO -->
@@ -59,7 +58,7 @@
           <span class="badge-level">Nivel 1: Polinomios</span>
           <span class="function-count">Función #1/5</span>
         </div>
-        <button class="btn-gray btn-sm">🔀 Otra al azar</button>
+        <button class="btn-gray btn-sm"> Otra al azar</button>
       </div>
 
       <p class="section-label">CALCULA LA PRIMERA DERIVADA DE:</p>
@@ -67,7 +66,7 @@
       <!-- Recuadro de la función f(x) -->
       <div class="formula-display-box">
         <span class="formula-prefix">f(x) =</span>
-        <span class="formula-math">x<sup>3</sup> &minus; 3x</span>
+        <span class="formula-math">x<sup>3</sup> - 3x</span>
       </div>
 
       <!-- Etiqueta del campo de texto -->
@@ -124,9 +123,28 @@
 
     </section>
 
-    <!-- COLUMNA DERECHA: VISUALIZADOR GEOMÉTRICO -->
+<!-- COLUMNA DERECHA: VISUALIZADOR GEOMÉTRICO -->
     <section class="card card-right">
       
       <div class="graph-header">
         <h2 class="graph-title">
-          <span class="graph-icon">Visualizador</span>  
+          <span class="graph-icon">📈</span> Visualizador Geométrico
+        </h2>
+      </div>
+
+      <!-- Contenedor del tablero JSXGraph -->
+      <div id="jxgbox" class="jxgbox" style="width:100%; height:400px;"></div>
+
+    </section>
+
+  </main>
+
+  <!-- LIBRERÍAS EXTERNAS (CARGADAS LOCALMENTE) -->
+  <script src="libs/compute-engine.min.js"></script>
+  <script src="libs/jsxgraphcore.js"></script>
+
+  <!-- SCRIPT PRINCIPAL DEL PROYECTO -->
+  <script type="module" src="js/main.js"></script>
+
+</body>
+</html>

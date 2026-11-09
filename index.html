@@ -57,7 +57,7 @@
   <main id="contenedor-principal" class="main-layout">
 
     <!-- ================= PANTALLA 2: EJERCICIO / ENTRENADOR ================= -->
-    <section id="pantalla-ejercicio" class="vista-entrenador card hidden">
+    <section id="pantalla-ejercicio" class="vista-entrenador card">
 
       <!-- Columna izquierda: Ejercicio y entrada de respuesta -->
       <article id="panel-ejercicio">
@@ -166,7 +166,7 @@
     </section>
 
     <!-- ================= PANTALLA 1: INICIO / NIVELES ================= -->
-    <section id="pantalla-inicio" class="vista-niveles card">
+    <section id="pantalla-inicio" class="vista-niveles card hidden">
       <header class="card-header-row">
         <h2>Entrenador de Derivadas</h2>
         <p>Elige un nivel para comenzar</p>
@@ -256,7 +256,7 @@
 
   <!-- ================= BARRA DE NAVEGACIÓN INFERIOR ================= -->
   <nav id="navegacion-inferior" aria-label="Navegación principal">
-    <button type="button" id="nav-entrenador" data-vista="entrenador">
+    <button type="button" id="nav-entrenador" data-vista="entrenador" class="active">
       <span>🛠️</span>
       <span>Entrenador</span>
     </button>
@@ -280,6 +280,6 @@
   <!-- MathLive (expone window.MathLive y el elemento <math-field>) -->
   <script src="https://unpkg.com/mathlive"></script>
   <!-- Módulo principal de la aplicación (importa Compute Engine desde https://esm.run/@cortex-js/compute-engine) -->
-  <script type="module" src="js/main.js"></script>
+  <script src="js/main.js"></script>
 </body>
 </html>

@@ -1,10 +1,13 @@
 // ==========================================================================
 // DerivaYa — Orquestador Principal (Líder de Proyecto)
-// Integra la navegación entre las 4 pantallas y el Módulo 3 (grafica.js).
-// Demuestra la funcionalidad del visualizador interactivo con JSXGraph.
+// Integra la navegación entre las 4 pantallas y los módulos de la app:
+// - Módulo 2: correccion.js (evaluación y verificación simbólico-numérica)
+// - Módulo 3: grafica.js (visualizador interactivo con JSXGraph)
 // ==========================================================================
 
+import { ComputeEngine, compile } from "https://esm.run/@cortex-js/compute-engine";
 import * as grafica from "./modulos/grafica.js";
+import * as correccion from "./modulos/correccion.js";
 
 // Función matemática base del ejercicio de demostración: f(x) = x³ - 3x
 const fDemo = (x) => Math.pow(x, 3) - 3 * x;
@@ -135,32 +138,22 @@ function configurarNavegacion() {
 }
 
 // ==========================================================================
-// 2. CONEXIÓN DEL MÓDULO 3 CON EL BOTÓN COMPROBAR Y MATHLIVE
+// 2. CONEXIÓN DE MÓDULOS CON EL BOTÓN COMPROBAR Y MATHLIVE
 // ==========================================================================
 function convertirRespuestaAFuncion(texto) {
   if (!texto || !texto.trim()) return null;
 
-  // 1. Si Compute Engine está disponible, usarlo
+  // 1. Si Compute Engine está disponible, compilar la expresión con CortexJS
   if (app.ce) {
     try {
       const limpia = texto.replace(/\bsen\b/g, "\\sin");
       const expr = app.ce.parse(limpia);
       if (expr && expr.isValid) {
-        if (typeof expr.compile === "function") {
-          const fnComp = expr.compile();
-          return (x) => {
-            try {
-              const res = typeof fnComp === "function" ? fnComp({ x }) : fnComp.run({ x });
-              return typeof res === "number" && Number.isFinite(res) ? res : NaN;
-            } catch {
-              return NaN;
-            }
-          };
-        }
+        const fnComp = compile(expr);
         return (x) => {
           try {
-            const v = expr.subs({ x }).N().valueOf();
-            return typeof v === "number" && Number.isFinite(v) ? v : NaN;
+            const res = fnComp.run({ x });
+            return typeof res === "number" && Number.isFinite(res) ? res : NaN;
           } catch {
             return NaN;
           }
@@ -201,30 +194,55 @@ function comprobarRespuesta() {
 
   if (!valor) return;
 
-  // Convertir la respuesta del estudiante en función matemática para graficarla
+  // Asegurar que Compute Engine esté listo
+  if (!app.ce) {
+    try {
+      app.ce = new ComputeEngine();
+    } catch (e) {
+      console.warn("Compute Engine aún no disponible:", e);
+    }
+  }
+
+  // 1. Validar y corregir con el Módulo 2 (Vanessa)
+  let resultado = { ok: false, valida: false, mensaje: "Error al evaluar la respuesta." };
+  if (app.ce && typeof correccion.corregir === "function") {
+    resultado = correccion.corregir(app.ce, valor, app.ejercicio.solucion);
+  }
+
+  // 2. Convertir la respuesta del estudiante en función matemática para graficarla
   const dfEstudiante = convertirRespuestaAFuncion(valor);
 
-  // Llamar al Módulo 3 para graficar f(x), la derivada correcta y la propuesta
+  // 3. Graficar con el Módulo 3 (Mariandry): f(x), la derivada teórica y la del estudiante
   grafica.mostrarGrafica(fDemo, dfCorrectaDemo, dfEstudiante);
 
+  // 4. Mostrar retroalimentación contextualizada
   if (retroEl) {
     retroEl.removeAttribute("hidden");
     retroEl.style.display = "block";
-    retroEl.style.padding = "12px 16px";
+    retroEl.style.padding = "14px 18px";
     retroEl.style.borderRadius = "10px";
     retroEl.style.marginTop = "14px";
-    retroEl.style.fontSize = "13px";
+    retroEl.style.fontSize = "14px";
+    retroEl.style.fontWeight = "500";
 
-    if (dfEstudiante) {
-      retroEl.style.backgroundColor = "rgba(129, 182, 76, 0.15)";
-      retroEl.style.border = "1px solid var(--chess-green)";
-      retroEl.style.color = "#A3D179";
-      retroEl.textContent = `📈 ¡Derivada graficada en el visualizador! Compara la curva rosa (tu respuesta) con la verde (derivada real).`;
-    } else {
+    if (!resultado.valida) {
+      // Caso A: Expresión inválida, vacía o con variables distintas a x (no descuenta intento)
       retroEl.style.backgroundColor = "rgba(245, 183, 73, 0.15)";
       retroEl.style.border = "1px solid #F5B749";
       retroEl.style.color = "#F5B749";
-      retroEl.textContent = `⚠️ Expresión registrada. Arrastra el punto naranja P sobre la curva azul para observar la pendiente.`;
+      retroEl.innerHTML = `⚠️ <strong>Entrada no válida:</strong> ${resultado.mensaje}`;
+    } else if (resultado.ok) {
+      // Caso B: Respuesta correcta
+      retroEl.style.backgroundColor = "rgba(129, 182, 76, 0.2)";
+      retroEl.style.border = "1px solid var(--chess-green)";
+      retroEl.style.color = "#A3D179";
+      retroEl.innerHTML = `🎉 <strong>${resultado.mensaje}</strong> Tu derivada coincide perfectamente con la curva teórica (verde).`;
+    } else {
+      // Caso C: Respuesta incorrecta (valida pero no coincide numéricamente)
+      retroEl.style.backgroundColor = "rgba(235, 77, 75, 0.2)";
+      retroEl.style.border = "1px solid #eb4d4b";
+      retroEl.style.color = "#ff7979";
+      retroEl.innerHTML = `❌ <strong>${resultado.mensaje}</strong> Revisa la curva rosa y compárala con la curva verde en el visualizador.`;
     }
   }
 }
@@ -292,27 +310,25 @@ function configurarEventosEntrenador() {
 // 3. INICIALIZACIÓN
 // ==========================================================================
 function iniciarApp() {
+  // Inicializar Compute Engine para el Módulo 2 (Corrección)
+  try {
+    app.ce = new ComputeEngine();
+    console.log("[DerivaYa] Compute Engine y Módulo 2 (Corrección) listos.");
+  } catch (err) {
+    console.debug("Compute engine sync init:", err);
+  }
+
   configurarNavegacion();
   configurarEventosEntrenador();
 
   // Mostrar el entrenador de entrada
   mostrarPantalla("entrenador");
 
-  // Inicializar el tablero JSXGraph usando la función de tu compañera
+  // Inicializar el tablero JSXGraph usando la función de Mariandry (Módulo 3)
   app.board = grafica.inicializarTablero("box", [-6, 8, 6, -6]);
 
   // Graficar f(x) = x³ - 3x con su derivada real f'(x) = 3x² - 3 y la tangente
   grafica.mostrarGrafica(fDemo, dfCorrectaDemo, null);
-
-  // Cargar Compute Engine en segundo plano
-  import("https://esm.run/@cortex-js/compute-engine")
-    .then(({ ComputeEngine }) => {
-      app.ce = new ComputeEngine();
-      console.log("[DerivaYa] Compute Engine listo.");
-    })
-    .catch((err) => {
-      console.debug("Compute engine CDN:", err);
-    });
 }
 
 if (document.readyState === "loading") {

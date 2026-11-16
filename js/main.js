@@ -31,6 +31,18 @@ const NOMBRES_NIVELES = {
   3: "Nivel 3 · Regla de la Cadena",
 };
 
+function redimensionarTablero() {
+  if (!app.board) return;
+  const box = document.getElementById("box");
+  if (!box || box.clientWidth === 0 || box.clientHeight === 0) return;
+  try {
+    app.board.resizeContainer(box.clientWidth, box.clientHeight);
+    app.board.fullUpdate();
+  } catch (error) {
+    console.debug("No se pudo redimensionar el tablero:", error);
+  }
+}
+
 // ==========================================================================
 // 1. NAVEGACIÓN ENTRE PANTALLAS
 // ==========================================================================
@@ -75,7 +87,7 @@ export function mostrarPantalla(nombreVista) {
 
   // Reajustar el tablero al volver a la pantalla del entrenador
   if (nombreVista === "entrenador") {
-    requestAnimationFrame(() => grafica.redimensionarTablero());
+    requestAnimationFrame(() => redimensionarTablero());
   }
 
   window.scrollTo({ top: 0, behavior: "smooth" });
@@ -134,7 +146,7 @@ function configurarNavegacion() {
     logoMarca.addEventListener("click", () => mostrarPantalla("niveles"));
   }
 
-  window.addEventListener("resize", () => grafica.redimensionarTablero());
+  window.addEventListener("resize", () => redimensionarTablero());
 }
 
 // ==========================================================================

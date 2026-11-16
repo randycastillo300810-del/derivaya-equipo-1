@@ -573,6 +573,12 @@ math-field#respuesta {
   border-radius: 14px !important;
 }
 
+#box .JXGtext {
+  color: var(--text-muted) !important;
+  font-family: 'JetBrains Mono', monospace !important;
+  font-size: 11px !important;
+}
+
 /* ================= PANTALLAS DE INICIO, FÓRMULAS Y RESULTADOS ================= */
 #avance-nivel {
   font-size: 13px;

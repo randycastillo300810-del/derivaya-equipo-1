@@ -15,15 +15,22 @@ export function derivar(ce, latexF) {
 
 // Devuelve { ok, valida, mensaje }
 // valida: false -> no se descuenta intento
-// OJO: la tolerancia del PDF era 1e6 (error), debe ser 1e-6
+
 export function corregir(ce, latexEstudiante, latexCorrecta, tolerancia = 1e-6) {
   // A. ¿Está vacía?
-  if (!latexEstudiante.trim()) {
+  // CAMBIO 1 si llega null o undefined, !latexEstudiante
+  // es true y no se llega a .trim(), así que ya no da error
+  if (!latexEstudiante || !latexEstudiante.trim()) {
     return { ok: false, valida: false, mensaje: "Escribe una respuesta." };
   }
 
+  // CAMBIO 2 normalizo antes de parsear, cambiando "sen"
+  // por "\sin" para aceptar sen(x) y sin(x) (si no, "sen" se leería como s·e·n)
+  const limpia = String(latexEstudiante || "").trim().replace(/\bsen\b/g, "\\sin");
+
   // B. ¿Está bien escrita?
-  const expr = ce.parse(latexEstudiante);
+  // CAMBIO 3: ahora parseo "limpia" en vez de "latexEstudiante"
+  const expr = ce.parse(limpia);
   if (!expr.isValid) {
     return { ok: false, valida: false, mensaje: "La expresión no está bien escrita." };
   }
@@ -55,4 +62,3 @@ export function corregir(ce, latexEstudiante, latexCorrecta, tolerancia = 1e-6) 
     ? { ok: true, valida: true, mensaje: "¡Correcto!" }
     : { ok: false, valida: false, mensaje: "No se pudo comprobar la respuesta." };
 }
-

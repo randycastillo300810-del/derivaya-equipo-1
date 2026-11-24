@@ -62,6 +62,9 @@ derivaya-equipo-1/
 │   └── styles.css               # Estilos globales, temas oscuros, layout flex/grid y media queries
 ├── docs/
 │   ├── README.md                # Guía y lineamientos de documentación técnica del equipo
+│   ├── modulo-1-banco.md        # Informe técnico detallado del Módulo 1
+│   ├── modulo-2-correcion.md    # Informe técnico detallado del Módulo 2
+│   ├── modulo-3-grafica.md        # Informe técnico detallado del Módulo 3
 │   └── modulo-4-progreso.md     # Informe técnico detallado del Módulo 4
 ├── js/
 │   ├── main.js                  # Controlador central: orquestación de eventos, DOM, gamificación y persistencia

@@ -15,7 +15,7 @@ Cada integrante del equipo debe crear y redactar su archivo de informe dentro de
 | Módulo 1 | `js/modulos/banco.js` | Sara | `feature/SM/dev/1` |
 | Módulo 2 | `js/modulos/correccion.js` | Vanessa | `feature/SS/dev/2` |
 | Módulo 3 | `js/modulos/grafica.js` | Mariandry | `feature/mrg/num_3` |
-| Módulo 4 | `js/modulos/progreso.js` | Randy (Líder) | `develop` |
+| Integración y Progreso | `js/main.js` | Randy (Líder) | `develop` |
 
 ---
 
@@ -26,7 +26,7 @@ Todos los informes de desarrollo deben construirse copiando y completando la sig
 ```markdown
 # 📄 Informe de Desarrollo de Módulo — DerivaYa
 
-* **Nombre del Módulo:** [Módulo 1 (banco.js) | Módulo 2 (correccion.js) | Módulo 3 (grafica.js) | Módulo 4 (progreso.js)]
+* **Nombre del Módulo:** [Módulo 1 (banco.js) | Módulo 2 (correccion.js) | Módulo 3 (grafica.js)]
 * **Desarrollador Responsable:** [Nombre y Apellido del estudiante]
 * **Número de Issue en GitHub:** #[Número de Issue asignado en el tablero]
 * **Rama de Trabajo:** feature/[INICIALES]/dev/[N°_ISSUE]

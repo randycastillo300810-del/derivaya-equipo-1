@@ -1,17 +1,208 @@
 // ==========================================================================
 // DerivaYa — Orquestador Principal (Líder de Proyecto)
-// Integra los 4 módulos del equipo:
+// Integra los 3 módulos del equipo:
 // - Módulo 1: banco.js (15 ejercicios por nivel)
 // - Módulo 2: correccion.js (evaluación simbólico-numérica con CortexJS)
 // - Módulo 3: grafica.js (visualizador interactivo JSXGraph con tangente)
-// - Módulo 4: progreso.js (puntuación, penalización, persistencia y resumen)
+// - Sistema de progreso, puntuación y persistencia unificado en el Líder
 // ==========================================================================
 
 import { ComputeEngine, compile } from "https://esm.run/@cortex-js/compute-engine";
 import * as banco from "./modulos/banco.js";
 import * as correccion from "./modulos/correccion.js";
 import * as grafica from "./modulos/grafica.js";
-import * as progreso from "./modulos/progreso.js";
+
+// ==========================================================================
+// SISTEMA DE PROGRESO, PUNTUACIÓN Y PERSISTENCIA (LÍDER DE PROYECTO)
+// ==========================================================================
+const CLAVE_RECORD = "alcaravan_record";
+const CLAVE_PROGRESO = "alcaravan_progreso_v2";
+const PUNTOS_PRIMER_INTENTO = 10;
+const PUNTOS_SEGUNDO_INTENTO = 5;
+const PENALIZACION_PISTA = 2;
+
+let pistasActuales = 0;
+let esNuevoRecord = false;
+
+function crearEstadoInicial() {
+  return {
+    puntajeTotal: 0,
+    nivelActivo: 1,
+    niveles: {
+      1: { indice: 0, puntaje: 0, aciertos: 0, completado: false, historial: [] },
+      2: { indice: 0, puntaje: 0, aciertos: 0, completado: false, historial: [] },
+      3: { indice: 0, puntaje: 0, aciertos: 0, completado: false, historial: [] }
+    }
+  };
+}
+
+let estadoGlobal = cargarEstadoGlobal();
+
+function cargarEstadoGlobal() {
+  try {
+    const raw = localStorage.getItem(CLAVE_PROGRESO);
+    if (raw) {
+      const data = JSON.parse(raw);
+      if (data && typeof data.puntajeTotal === "number" && data.niveles) {
+        [1, 2, 3].forEach(n => {
+          if (!data.niveles[n]) {
+            data.niveles[n] = { indice: 0, puntaje: 0, aciertos: 0, completado: false, historial: [] };
+          }
+        });
+        return data;
+      }
+    }
+  } catch (e) {
+    console.warn("No se pudo cargar el progreso global:", e);
+  }
+  return crearEstadoInicial();
+}
+
+function guardarEstadoGlobal() {
+  try {
+    localStorage.setItem(CLAVE_PROGRESO, JSON.stringify(estadoGlobal));
+  } catch (e) {
+    console.warn("No se pudo guardar el progreso global:", e);
+  }
+}
+
+function obtenerEstadoGlobal() {
+  return estadoGlobal;
+}
+
+function obtenerProgresoNivel(nivel) {
+  const num = Number(nivel) || 1;
+  if (!estadoGlobal.niveles[num]) {
+    estadoGlobal.niveles[num] = { indice: 0, puntaje: 0, aciertos: 0, completado: false, historial: [] };
+  }
+  return estadoGlobal.niveles[num];
+}
+
+function actualizarIndiceNivel(nivel, indice) {
+  const num = Number(nivel) || 1;
+  if (estadoGlobal.niveles[num]) {
+    estadoGlobal.niveles[num].indice = indice;
+    estadoGlobal.nivelActivo = num;
+    guardarEstadoGlobal();
+  }
+}
+
+function iniciarProgreso(appObj, reiniciarTodo = false) {
+  pistasActuales = 0;
+  esNuevoRecord = false;
+
+  if (reiniciarTodo) {
+    estadoGlobal = crearEstadoInicial();
+    guardarEstadoGlobal();
+  } else {
+    const nivel = Number(appObj?.nivelActual) || estadoGlobal.nivelActivo || 1;
+    if (estadoGlobal.niveles[nivel]) {
+      const ptsPrevios = estadoGlobal.niveles[nivel].puntaje || 0;
+      estadoGlobal.puntajeTotal = Math.max(0, estadoGlobal.puntajeTotal - ptsPrevios);
+      estadoGlobal.niveles[nivel] = { indice: 0, puntaje: 0, aciertos: 0, completado: false, historial: [] };
+      guardarEstadoGlobal();
+    }
+  }
+
+  if (appObj) {
+    appObj.puntaje = estadoGlobal.puntajeTotal;
+    const nivel = Number(appObj.nivelActual) || 1;
+    appObj.aciertos = estadoGlobal.niveles[nivel]?.aciertos || 0;
+  }
+}
+
+function registrarPistaProgreso(appObj) {
+  pistasActuales++;
+}
+
+function obtenerRecord() {
+  try {
+    const valor = Number(localStorage.getItem(CLAVE_RECORD));
+    return Number.isFinite(valor) ? valor : 0;
+  } catch (error) {
+    return 0;
+  }
+}
+
+function guardarRecord(valor) {
+  try {
+    localStorage.setItem(CLAVE_RECORD, String(valor));
+  } catch (error) {
+    console.warn("No se pudo guardar el récord:", error);
+  }
+}
+
+function registrarProgreso(appObj, resultado, pregunta) {
+  const nivel = Number(appObj.nivelActual) || estadoGlobal.nivelActivo || 1;
+  if (!estadoGlobal.niveles[nivel]) {
+    estadoGlobal.niveles[nivel] = { indice: 0, puntaje: 0, aciertos: 0, completado: false, historial: [] };
+  }
+  const datosNivel = estadoGlobal.niveles[nivel];
+
+  let puntosPregunta = 0;
+  const intentosUsados = resultado && resultado.intentos ? resultado.intentos : 1;
+  const fueExitosa = resultado && resultado.ok;
+
+  if (fueExitosa) {
+    datosNivel.aciertos++;
+    const puntosBase = (intentosUsados <= 1) ? PUNTOS_PRIMER_INTENTO : PUNTOS_SEGUNDO_INTENTO;
+    const descuentoPistas = pistasActuales * PENALIZACION_PISTA;
+    puntosPregunta = Math.max(0, puntosBase - descuentoPistas);
+    datosNivel.puntaje += puntosPregunta;
+    estadoGlobal.puntajeTotal += puntosPregunta;
+  }
+
+  datosNivel.historial.push({
+    pregunta: pregunta,
+    intentos: intentosUsados,
+    pistas: pistasActuales,
+    puntos: puntosPregunta,
+    ok: fueExitosa
+  });
+
+  pistasActuales = 0;
+
+  appObj.puntaje = estadoGlobal.puntajeTotal;
+  appObj.aciertos = datosNivel.aciertos;
+
+  const recordActual = obtenerRecord();
+  if (estadoGlobal.puntajeTotal > recordActual) {
+    guardarRecord(estadoGlobal.puntajeTotal);
+    esNuevoRecord = true;
+  }
+
+  guardarEstadoGlobal();
+}
+
+function obtenerResumenProgreso(appObj) {
+  const nivel = Number(appObj?.nivelActual) || estadoGlobal.nivelActivo || 1;
+  const datosNivel = estadoGlobal.niveles[nivel] || { historial: [], puntaje: 0, aciertos: 0 };
+  const total = (appObj?.preguntas && Array.isArray(appObj.preguntas)) ? appObj.preguntas.length : datosNivel.historial.length;
+  const falladas = datosNivel.historial.filter(h => !h.ok).map(h => h.pregunta);
+
+  return {
+    puntaje: datosNivel.puntaje,
+    puntajeTotal: estadoGlobal.puntajeTotal,
+    aciertos: datosNivel.aciertos,
+    total: total,
+    record: obtenerRecord(),
+    nuevoRecord: esNuevoRecord,
+    historial: [...datosNivel.historial],
+    falladas: falladas
+  };
+}
+
+// Adaptador interno que sustituye la importación de progreso.js
+const progreso = {
+  obtenerEstadoGlobal,
+  obtenerProgresoNivel,
+  actualizarIndiceNivel,
+  iniciar: iniciarProgreso,
+  registrarPista: registrarPistaProgreso,
+  obtenerRecord,
+  registrar: registrarProgreso,
+  obtenerResumen: obtenerResumenProgreso
+};
 
 // ==========================================================================
 // 1. ESTADO GLOBAL COMPARTIDO
@@ -118,14 +309,12 @@ function redimensionarTablero() {
 // ==========================================================================
 export function mostrarPantalla(nombreVista) {
   const pantallas = {
-    niveles: document.getElementById("pantalla-inicio"),
     entrenador: document.getElementById("pantalla-ejercicio"),
     formulas: document.getElementById("pantalla-formulas"),
     progreso: document.getElementById("pantalla-resultados"),
   };
 
   const navBotones = {
-    niveles: document.getElementById("nav-niveles"),
     entrenador: document.getElementById("nav-entrenador"),
     formulas: document.getElementById("nav-formulas"),
     progreso: document.getElementById("nav-progreso"),
@@ -138,7 +327,8 @@ export function mostrarPantalla(nombreVista) {
     }
   });
 
-  const activa = pantallas[nombreVista];
+  const vistaDestino = (nombreVista === "niveles" || !pantallas[nombreVista]) ? "entrenador" : nombreVista;
+  const activa = pantallas[vistaDestino];
   if (activa) {
     activa.classList.remove("hidden");
     activa.removeAttribute("hidden");
@@ -146,7 +336,7 @@ export function mostrarPantalla(nombreVista) {
 
   Object.entries(navBotones).forEach(([vista, boton]) => {
     if (!boton) return;
-    if (vista === nombreVista) {
+    if (vista === vistaDestino) {
       boton.classList.add("active");
       boton.setAttribute("aria-current", "page");
     } else {
@@ -155,7 +345,7 @@ export function mostrarPantalla(nombreVista) {
     }
   });
 
-  if (nombreVista === "entrenador") {
+  if (vistaDestino === "entrenador") {
     requestAnimationFrame(() => redimensionarTablero());
   }
 
@@ -180,8 +370,11 @@ export function seleccionarNivel(numNivel) {
     app.preguntas = todosLosEjercicios.slice(inicio, inicio + 5);
   }
 
-  // Reiniciar progreso para este nivel usando el Módulo 4 (progreso.js)
-  progreso.iniciar(app);
+  // Obtener progreso persistido para este nivel (NO reinicia el puntaje global)
+  const datosNivel = progreso.obtenerProgresoNivel(nivel);
+  app.puntaje = progreso.obtenerEstadoGlobal().puntajeTotal;
+  app.aciertos = datosNivel.aciertos || 0;
+
   actualizarMarcadoresTopbar();
 
   // Actualizar pestañas activas en la interfaz
@@ -193,9 +386,9 @@ export function seleccionarNivel(numNivel) {
   const subtituloNivel = document.getElementById("subtitulo-nivel");
   if (subtituloNivel) subtituloNivel.textContent = infoNivel.titulo;
 
-  // Cargar el primer ejercicio
-  app.indice = 0;
-  cargarEjercicio(0);
+  // Reanudar en el ejercicio guardado (o reiniciar si ya completó el nivel)
+  const indiceCargar = (datosNivel.indice < app.preguntas.length) ? datosNivel.indice : 0;
+  cargarEjercicio(indiceCargar);
   mostrarPantalla("entrenador");
 }
 
@@ -427,9 +620,15 @@ function solicitarPista() {
 }
 
 function avanzarSiguiente() {
+  const nivel = Number(app.nivelActual) || 1;
   if (app.indice < app.preguntas.length - 1) {
-    cargarEjercicio(app.indice + 1);
+    const nuevoIndice = app.indice + 1;
+    progreso.actualizarIndiceNivel(nivel, nuevoIndice);
+    cargarEjercicio(nuevoIndice);
   } else {
+    progreso.actualizarIndiceNivel(nivel, app.preguntas.length);
+    const datosNivel = progreso.obtenerProgresoNivel(nivel);
+    datosNivel.completado = true;
     mostrarPantallaResultados();
   }
 }
@@ -510,7 +709,6 @@ function configurarEventosEntrenador() {
   const btnPista = document.getElementById("btn-pista");
   const btnSiguiente = document.getElementById("btn-siguiente");
   const vistaPrevia = document.getElementById("vista-previa-derivada");
-  const teclado = document.getElementById("teclado-matematico");
   const btnReiniciarRecord = document.getElementById("btn-reiniciar-record");
 
   if (inputEl) {
@@ -549,29 +747,18 @@ function configurarEventosEntrenador() {
     });
   }
 
-  // Botones del teclado matemático virtual
-  if (teclado && inputEl) {
-    teclado.addEventListener("click", (e) => {
-      const btn = e.target.closest("button[data-token]");
-      if (!btn) return;
-      const token = btn.getAttribute("data-token");
-      if (typeof inputEl.executeCommand === "function") {
-        inputEl.executeCommand(["insert", token]);
-      } else {
-        inputEl.value = (inputEl.value || "") + token;
-      }
-      inputEl.dispatchEvent(new Event("input"));
-    });
-  }
-
   // Botón para reiniciar récord desde la pantalla de resultados
   if (btnReiniciarRecord) {
     btnReiniciarRecord.addEventListener("click", () => {
       try {
         localStorage.removeItem("alcaravan_record");
+        localStorage.removeItem("alcaravan_progreso_v2");
+        progreso.iniciar(app, true);
         actualizarMarcadoresTopbar();
         const recordFinal = document.getElementById("valor-record-final");
         if (recordFinal) recordFinal.textContent = "0";
+        const puntajeFinal = document.getElementById("valor-puntaje-final");
+        if (puntajeFinal) puntajeFinal.textContent = "0";
       } catch (e) {
         console.warn("No se pudo reiniciar el récord:", e);
       }
@@ -582,14 +769,21 @@ function configurarEventosEntrenador() {
 function configurarNavegacion() {
   const vinculosNav = [
     { id: "nav-entrenador", vista: "entrenador" },
-    { id: "nav-niveles", vista: "niveles" },
     { id: "nav-formulas", vista: "formulas" },
     { id: "nav-progreso", vista: "progreso" },
   ];
 
   vinculosNav.forEach(({ id, vista }) => {
     const btn = document.getElementById(id);
-    if (btn) btn.addEventListener("click", () => mostrarPantalla(vista));
+    if (btn) {
+      btn.addEventListener("click", () => {
+        if (vista === "progreso") {
+          mostrarPantallaResultados();
+        } else {
+          mostrarPantalla(vista);
+        }
+      });
+    }
   });
 
   [1, 2, 3].forEach((nivel) => {
@@ -601,15 +795,20 @@ function configurarNavegacion() {
   });
 
   const btnVolver = document.getElementById("btn-volver-jugar");
-  if (btnVolver) btnVolver.addEventListener("click", () => seleccionarNivel(app.nivelActual));
+  if (btnVolver) {
+    btnVolver.addEventListener("click", () => {
+      progreso.iniciar(app, false);
+      seleccionarNivel(app.nivelActual);
+    });
+  }
 
   const btnCambiarNivel = document.getElementById("btn-cambiar-nivel");
-  if (btnCambiarNivel) btnCambiarNivel.addEventListener("click", () => mostrarPantalla("niveles"));
+  if (btnCambiarNivel) btnCambiarNivel.addEventListener("click", () => mostrarPantalla("entrenador"));
 
   const logoMarca = document.getElementById("marca");
   if (logoMarca) {
     logoMarca.style.cursor = "pointer";
-    logoMarca.addEventListener("click", () => mostrarPantalla("niveles"));
+    logoMarca.addEventListener("click", () => mostrarPantalla("entrenador"));
   }
 
   window.addEventListener("resize", () => redimensionarTablero());
@@ -642,11 +841,14 @@ function iniciarApp() {
     console.warn("[DerivaYa] Tablero JSXGraph:", err);
   }
 
-  // 4. Iniciar con el Nivel 1 cargando los ejercicios del Módulo 1
+  // 4. Iniciar: Restaurar el progreso guardado de niveles o comenzar en Nivel 1
   try {
-    seleccionarNivel(1);
+    const estado = progreso.obtenerEstadoGlobal();
+    const nivelActivo = estado.nivelActivo || 1;
+    seleccionarNivel(nivelActivo);
   } catch (err) {
-    console.warn("[DerivaYa] Carga Nivel 1:", err);
+    console.warn("[DerivaYa] Carga Nivel:", err);
+    seleccionarNivel(1);
   }
 
   // 5. Cargar récord histórico en topbar

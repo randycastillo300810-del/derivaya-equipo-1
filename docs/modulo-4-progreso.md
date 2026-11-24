@@ -1,10 +1,8 @@
 # 📄 Informe de Desarrollo de Módulo — DerivaYa
 
 * **Nombre del Módulo:** Módulo 4 (progreso.js)
-* **Desarrollador Responsable:** Randy Castillo (Líder de Proyecto — *Cobertura por retiro de integrante asignado*)
 * **Número de Issue en GitHub:** #4
 * **Rama de Trabajo:** `develop`
-* **Fecha de Entrega:** 24/11/2026
 
 ---
 

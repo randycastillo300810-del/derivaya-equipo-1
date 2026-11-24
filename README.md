@@ -81,7 +81,7 @@ derivaya-equipo-1/
 | **Módulo 1** | `banco.js` | Sara | Provee la base de datos de reactivos dividida por niveles, con expresiones LaTeX, funciones JavaScript y pistas. |
 | **Módulo 2** | `correccion.js` | Vanessa | Procesa la entrada matemática del usuario, la compara simbólicamente con la solución esperada y emite el diagnóstico (`ok`, `valida`, `intentos`). |
 | **Módulo 3** | `grafica.js` | Mariandry | Administra el canvas de JSXGraph: dibuja la función, la recta tangente móvil, el glider interactivo y la gráfica del estudiante. |
-| **Líder / Integración** | `main.js` | Randy (Líder) | Ensambla los módulos, gestiona la puntuación, intentos, persistencia multi-nivel en `localStorage`, eventos y vistas. |
+| **Módulo 4 / Líder** | `modulo-4-progreso.md` / `main.js` | Randy (Líder) | Informe técnico de progreso, ensamblado de submódulos, gamificación y persistencia multi-nivel. |
 
 ---
 

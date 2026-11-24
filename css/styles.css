@@ -1,11 +1,997 @@
+/* ================= VARIABLES Y RESET ================= */
 :root {
-  --color-primario: #2563eb;
-  --color-fondo: #f8fafc;
-  --color-texto: #1e293b;
-  --fuente-principal: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  --bg-page: #302E2B;
+  --bg-card: #262421;
+  --bg-box: #1F1E1B;
+  --bg-control: #3B3936;
+  --border-subtle: #3B3936;
+  --border-light: #4A4844;
+
+  --text-main: #E7E6E4;
+  --text-muted: #9E9C98;
+
+  --chess-green: #81B64C;
+  --chess-green-shadow: #537A2A;
+  --chess-green-hover: #8CC354;
+
+  --amber: #F59E0B;
+  --blue: #3B82F6;
+  --emerald: #10B981;
+  --pink: #FB7185;
 }
+
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+/* Ocultar tanto por atributo [hidden] como por clase .hidden */
+[hidden],
+.hidden {
+  display: none !important;
+}
+
+html {
+  width: 100%;
+  max-width: 100%;
+  overflow-x: hidden;
+  box-sizing: border-box;
+}
+
 body {
-  background-color: var(--color-fondo);
-  color: var(--color-texto);
-  font-family: var(--fuente-principal);
+  width: 100%;
+  max-width: 100%;
+  overflow-x: hidden;
+  background-color: var(--bg-page);
+  color: var(--text-main);
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  min-height: 100vh;
+  padding-bottom: 88px;
+  box-sizing: border-box;
+}
+
+code {
+  font-family: 'JetBrains Mono', monospace;
+}
+
+/* ================= BARRA SUPERIOR ================= */
+.topbar {
+  width: 100%;
+  background-color: var(--bg-card);
+  border-bottom: 1px solid var(--border-subtle);
+  padding: 12px 24px;
+  position: sticky;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 20;
+  box-sizing: border-box;
+}
+
+.topbar-container {
+  width: 100%;
+  max-width: 1320px;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  box-sizing: border-box;
+}
+
+.logo {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.logo-icon {
+  width: 40px;
+  height: 40px;
+  border-radius: 10px;
+  background-color: var(--chess-green);
+  box-shadow: 0 3px 0 var(--chess-green-shadow);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'JetBrains Mono', monospace;
+  font-weight: 700;
+  font-size: 18px;
+  color: #FFFFFF;
+}
+
+.logo-title {
+  font-size: 18px;
+  font-weight: 800;
+  color: #FFFFFF;
+  line-height: 1.1;
+}
+
+.logo-title span {
+  color: var(--chess-green);
+}
+
+#subtitulo-nivel {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--chess-green);
+  margin-top: 2px;
+}
+
+.pill {
+  background-color: var(--bg-page);
+  border: 1px solid var(--border-light);
+  border-radius: 999px;
+  padding: 6px 14px;
+  font-size: 13px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+#indicador-puntaje {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.icon-star {
+  color: var(--amber);
+}
+
+.record-text {
+  color: var(--text-muted);
+  font-size: 12px;
+}
+
+#selector-niveles-superior {
+  background-color: var(--bg-page);
+  border: 1px solid var(--border-subtle);
+  border-radius: 12px;
+  padding: 5px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.lvl-tab {
+  background: transparent;
+  border: none;
+  color: var(--text-muted);
+  font-size: 12px;
+  font-weight: 600;
+  padding: 7px 12px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.lvl-tab:hover {
+  color: #FFFFFF;
+}
+
+.lvl-tab.active {
+  background-color: var(--bg-control);
+  color: #FFFFFF;
+}
+
+/* ================= BOTONES ESTILO CHESS.COM ================= */
+.btn-green {
+  background-color: var(--chess-green);
+  color: #FFFFFF;
+  border: none;
+  border-radius: 10px;
+  padding: 12px 16px;
+  font-size: 13px;
+  font-weight: 700;
+  box-shadow: 0 4px 0 var(--chess-green-shadow);
+  cursor: pointer;
+  transition: transform 0.1s ease, background-color 0.15s ease;
+}
+
+.btn-green:hover:not(:disabled) {
+  background-color: var(--chess-green-hover);
+}
+
+.btn-green:active:not(:disabled) {
+  transform: translateY(2px);
+  box-shadow: 0 2px 0 var(--chess-green-shadow);
+}
+
+.btn-green:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.btn-gray {
+  background-color: var(--bg-control);
+  color: #D6D5D3;
+  border: 1px solid var(--border-light);
+  border-radius: 10px;
+  padding: 12px 14px;
+  font-size: 13px;
+  font-weight: 600;
+  box-shadow: 0 3px 0 #1A1917;
+  cursor: pointer;
+}
+
+.btn-gray:hover {
+  background-color: #464340;
+  color: #FFFFFF;
+}
+
+.btn-amber {
+  background-color: #443722;
+  color: #F5B749;
+  border: 1px solid #755825;
+  border-radius: 10px;
+  padding: 12px 14px;
+  font-size: 13px;
+  font-weight: 700;
+  box-shadow: 0 4px 0 #261E11;
+  cursor: pointer;
+}
+
+.btn-amber:hover {
+  background-color: #524228;
+}
+
+.btn-sm {
+  padding: 7px 12px;
+  font-size: 12px;
+}
+
+/* ================= CONTENEDOR PRINCIPAL Y PANTALLAS ================= */
+.main-layout {
+  width: 100%;
+  max-width: 1320px;
+  margin: 24px auto;
+  padding: 0 24px;
+  box-sizing: border-box;
+}
+
+.card {
+  width: 100%;
+  max-width: 100%;
+  background-color: var(--bg-card);
+  border: 1px solid var(--border-subtle);
+  border-radius: 18px;
+  padding: 24px;
+  box-shadow: 0 12px 28px rgba(0, 0, 0, 0.28);
+  box-sizing: border-box;
+  overflow: hidden;
+}
+
+/* PANTALLA 2: ENTRENADOR (2 COLUMNAS: EJERCICIO IZQ + GRÁFICA DER) */
+#pantalla-ejercicio {
+  width: 100%;
+  max-width: 100%;
+  display: grid;
+  grid-template-columns: 5fr 7fr;
+  gap: 24px;
+  align-items: start;
+  background: transparent;
+  border: none;
+  padding: 0;
+  box-shadow: none;
+  box-sizing: border-box;
+}
+
+#panel-ejercicio,
+#panel-grafica {
+  width: 100%;
+  max-width: 100%;
+  background-color: var(--bg-card);
+  border: 1px solid var(--border-subtle);
+  border-radius: 18px;
+  padding: 24px;
+  box-shadow: 0 12px 28px rgba(0, 0, 0, 0.28);
+  box-sizing: border-box;
+  overflow: hidden;
+}
+
+.card-header-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 14px;
+}
+
+.level-info {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+#etiqueta-nivel {
+  background-color: #2E2B40;
+  color: var(--chess-green);
+  border: 1px solid #484366;
+  font-size: 12px;
+  font-weight: 600;
+  padding: 4px 10px;
+  border-radius: 6px;
+}
+
+#contador-funcion {
+  font-size: 12px;
+  color: var(--text-muted);
+}
+
+/* Barra de progreso */
+.progress-bar-track {
+  width: 100%;
+  height: 8px;
+  background-color: var(--bg-box);
+  border-radius: 999px;
+  overflow: hidden;
+  margin-bottom: 16px;
+  border: 1px solid var(--border-subtle);
+}
+
+.progress-bar-fill {
+  height: 100%;
+  width: 20%;
+  background-color: var(--chess-green);
+  border-radius: 999px;
+  transition: width 0.35s ease;
+}
+
+#panel-ejercicio > p {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  margin-bottom: 10px;
+}
+
+/* Caja de la función f(x) */
+#caja-enunciado {
+  background-color: var(--bg-box);
+  border: 1px solid #353330;
+  border-radius: 14px;
+  min-height: 96px;
+  padding: 16px 20px;
+  margin-bottom: 18px;
+  display: flex !important;
+  flex-direction: row !important;
+  align-items: center !important;
+  justify-content: center !important;
+  text-align: center !important;
+  gap: 12px !important;
+  width: 100% !important;
+  box-sizing: border-box !important;
+}
+
+#caja-enunciado > span {
+  font-family: 'JetBrains Mono', monospace;
+  font-weight: 700;
+  font-size: 20px;
+  color: var(--chess-green);
+  flex: 0 0 auto !important;
+  margin: 0 !important;
+}
+
+#enunciado-funcion {
+  font-size: 26px;
+  font-weight: 700;
+  color: #FFFFFF;
+  font-family: 'JetBrains Mono', monospace;
+  display: inline-block !important;
+  text-align: center !important;
+  flex: 0 0 auto !important;
+  margin: 0 !important;
+}
+
+/* Fila de etiqueta de entrada e indicador de intentos */
+.fila-etiqueta-respuesta {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 8px;
+  gap: 10px;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.fila-etiqueta-respuesta label {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--text-main);
+  margin: 0;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.fila-etiqueta-respuesta label strong {
+  color: var(--chess-green);
+  font-family: 'JetBrains Mono', monospace;
+}
+
+#indicador-intentos {
+  display: inline-flex;
+  align-items: center;
+  background-color: var(--bg-page);
+  border: 1px solid var(--border-light);
+  color: var(--amber);
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 12px;
+  font-weight: 600;
+  padding: 3px 10px;
+  border-radius: 12px;
+  letter-spacing: 0.3px;
+  white-space: nowrap;
+  flex-shrink: 0;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+}
+
+/* Contenedor de entrada MathLive */
+#contenedor-input {
+  background-color: var(--bg-box);
+  border: 1px solid #3E3C38;
+  border-radius: 12px;
+  padding: 8px 12px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 12px;
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+  box-sizing: border-box;
+  overflow: hidden;
+}
+
+#contenedor-input:focus-within {
+  border-color: var(--chess-green);
+  box-shadow: 0 0 0 3px rgba(129, 182, 76, 0.2);
+}
+
+#contenedor-input > span {
+  font-family: 'JetBrains Mono', monospace;
+  font-weight: 700;
+  font-size: 14px;
+  color: var(--chess-green);
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+math-field#respuesta {
+  flex: 1 1 0;
+  min-width: 0;
+  max-width: 100%;
+  width: 100%;
+  background: transparent;
+  color: var(--text-main);
+  border: none;
+  font-size: 16px;
+  padding: 6px 4px;
+  outline: none;
+  overflow-x: auto;
+}
+
+#btn-limpiar {
+  flex-shrink: 0;
+}
+
+/* Vista previa */
+#caja-vista-previa {
+  background-color: var(--bg-box);
+  border: 1px solid #32302D;
+  border-radius: 10px;
+  padding: 10px 14px;
+  margin-bottom: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  font-size: 12px;
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+  box-sizing: border-box;
+  overflow: hidden;
+}
+
+#caja-vista-previa > span {
+  color: var(--text-muted);
+  flex-shrink: 0;
+}
+
+#vista-previa-derivada {
+  font-family: 'JetBrains Mono', monospace;
+  color: #D6D5D3;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  min-width: 0;
+  text-align: right;
+}
+
+/* Botones de acción (Comprobar, Pista, Siguiente) */
+#botones-accion {
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr;
+  gap: 10px;
+  margin-top: 4px;
+}
+
+/* ================= PANEL DERECHO: GRÁFICA JSXGRAPH ================= */
+#panel-grafica header {
+  margin-bottom: 12px;
+}
+
+#panel-grafica header h2 {
+  font-size: 17px;
+  font-weight: 700;
+  color: #FFFFFF;
+  margin-bottom: 4px;
+}
+
+#panel-grafica header p {
+  font-size: 12px;
+  color: var(--text-muted);
+}
+
+#panel-grafica header strong {
+  color: var(--amber);
+}
+
+#lectura-glider {
+  display: inline-flex;
+  align-items: center;
+  background-color: var(--bg-box);
+  border: 1px solid #383633;
+  border-radius: 999px;
+  padding: 6px 14px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 12px;
+  color: var(--amber);
+  margin-bottom: 12px;
+}
+
+#leyenda-grafica {
+  list-style: none;
+  background-color: var(--bg-box);
+  border: 1px solid #353330;
+  border-radius: 12px;
+  padding: 10px 14px;
+  margin-bottom: 14px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px 18px;
+  font-size: 12px;
+}
+
+#leyenda-grafica li {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+#leyenda-grafica li::before {
+  content: "";
+  display: inline-block;
+  width: 14px;
+  height: 3px;
+  border-radius: 2px;
+}
+
+#leyenda-grafica li:nth-child(1)::before {
+  background-color: var(--blue);
+}
+
+#leyenda-grafica li:nth-child(2)::before {
+  background-color: var(--amber);
+}
+
+#leyenda-grafica li:nth-child(3)::before {
+  background-color: var(--emerald);
+}
+
+#leyenda-grafica li:nth-child(4)::before {
+  background-color: var(--pink);
+}
+
+#box {
+  width: 100%;
+  height: 420px;
+  background-color: var(--bg-box) !important;
+  border: 1px solid var(--border-subtle) !important;
+  border-radius: 14px !important;
+}
+
+#box .JXGtext {
+  color: var(--text-muted) !important;
+  font-family: 'JetBrains Mono', monospace !important;
+  font-size: 11px !important;
+}
+
+/* ================= PANTALLAS DE INICIO, FÓRMULAS Y RESULTADOS ================= */
+#avance-nivel {
+  font-size: 13px;
+  color: var(--text-muted);
+  margin-bottom: 16px;
+}
+
+#catalogo-banco {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 12px;
+}
+
+#pantalla-formulas > div {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 16px;
+  margin-top: 12px;
+}
+
+#pantalla-formulas article {
+  background-color: var(--bg-box);
+  border: 1px solid var(--border-subtle);
+  border-radius: 12px;
+  padding: 16px;
+}
+
+#pantalla-formulas h3 {
+  font-size: 14px;
+  color: var(--chess-green);
+  margin-bottom: 10px;
+}
+
+#pantalla-formulas ul {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 13px;
+}
+
+#resumen-ronda {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 12px;
+  margin-bottom: 18px;
+}
+
+#resumen-ronda p {
+  background-color: var(--bg-box);
+  border: 1px solid var(--border-subtle);
+  border-radius: 12px;
+  padding: 14px;
+  font-size: 13px;
+}
+
+#botones-resultados {
+  display: flex;
+  gap: 12px;
+  margin-top: 18px;
+}
+
+/* ================= RETROALIMENTACIÓN ================= */
+#contenedor-retroalimentacion {
+  padding: 12px 14px;
+  border-radius: 10px;
+  margin-top: 14px;
+  font-size: 13px;
+}
+
+#contenedor-retroalimentacion.correcto {
+  color: var(--emerald);
+  border-left: 4px solid var(--emerald);
+  background: rgba(16, 185, 129, 0.12);
+}
+
+#contenedor-retroalimentacion.incorrecto {
+  color: var(--pink);
+  border-left: 4px solid var(--pink);
+  background: rgba(251, 113, 133, 0.12);
+}
+
+/* ================= ANIMACIÓN DE ACIERTO ================= */
+@keyframes aciertoPulse {
+  0% {
+    transform: scale(1);
+    box-shadow: 0 4px 0 var(--chess-green-shadow), 0 0 0 0 var(--chess-green);
+  }
+  50% {
+    transform: scale(1.04);
+    box-shadow: 0 4px 0 var(--chess-green-shadow), 0 0 0 12px rgba(129, 182, 76, 0.35);
+  }
+  100% {
+    transform: scale(1);
+    box-shadow: 0 4px 0 var(--chess-green-shadow), 0 0 0 0 var(--chess-green);
+  }
+}
+
+.animacion-acierto {
+  animation: aciertoPulse 0.6s ease-out;
+}
+
+/* ================= BARRA DE NAVEGACIÓN INFERIOR ================= */
+#navegacion-inferior {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  width: 100%;
+  background-color: var(--bg-box);
+  border-top: 1px solid #353330;
+  padding: 8px 16px;
+  z-index: 30;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 16px;
+  box-sizing: border-box;
+}
+
+#navegacion-inferior button {
+  background: transparent;
+  border: none;
+  color: var(--text-muted);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  padding: 6px 14px;
+  font-size: 11px;
+  font-weight: 600;
+  cursor: pointer;
+  min-width: 80px;
+}
+
+#navegacion-inferior button:hover,
+#navegacion-inferior button.active {
+  color: var(--chess-green);
+}
+
+/* ================= RESPONSIVE: LAPTOP, TABLET Y MÓVIL ================= */
+@media (max-width: 1024px) {
+  .topbar {
+    padding: 10px 18px;
+  }
+
+  .topbar-container {
+    gap: 12px;
+  }
+}
+
+@media (max-width: 980px) {
+  #pantalla-ejercicio {
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+
+  #box {
+    height: 320px;
+  }
+}
+
+@media (max-width: 768px) {
+  .topbar {
+    padding: 10px 10px;
+    width: 100%;
+    left: 0;
+    right: 0;
+    box-sizing: border-box;
+  }
+
+  .topbar-container {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    grid-template-rows: auto auto;
+    row-gap: 8px;
+    column-gap: 8px;
+    align-items: center;
+    width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
+  }
+
+  #marca {
+    grid-column: 1;
+    grid-row: 1;
+    min-width: 0;
+  }
+
+  #indicadores-estado {
+    grid-column: 2;
+    grid-row: 1;
+    justify-self: end;
+    flex-shrink: 0;
+  }
+
+  #selector-niveles-superior {
+    grid-column: 1 / -1;
+    grid-row: 2;
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    width: 100%;
+    padding: 3px;
+    gap: 4px;
+    box-sizing: border-box;
+  }
+
+  .logo {
+    gap: 8px;
+  }
+
+  .logo-icon {
+    width: 34px;
+    height: 34px;
+    font-size: 15px;
+  }
+
+  .logo-title {
+    font-size: 16px;
+  }
+
+  #subtitulo-nivel {
+    font-size: 11px;
+  }
+
+  .pill {
+    padding: 4px 10px;
+    font-size: 12px;
+  }
+
+  .lvl-tab {
+    padding: 7px 2px;
+    font-size: 11px;
+    text-align: center;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    min-width: 0;
+  }
+
+  .main-layout {
+    width: 100%;
+    max-width: 100%;
+    padding: 0 8px;
+    margin: 8px auto;
+    box-sizing: border-box;
+  }
+
+  #panel-ejercicio,
+  #panel-grafica,
+  .card {
+    width: 100%;
+    max-width: 100%;
+    padding: 14px 10px;
+    border-radius: 14px;
+    box-sizing: border-box;
+  }
+
+  #caja-enunciado {
+    min-height: 76px;
+    padding: 12px 10px;
+    margin-bottom: 14px;
+    gap: 8px;
+    width: 100% !important;
+    box-sizing: border-box !important;
+  }
+
+  #caja-enunciado > span {
+    font-size: 18px;
+    flex: 0 0 auto !important;
+    margin: 0 !important;
+  }
+
+  #enunciado-funcion {
+    font-size: 22px;
+    flex: 0 0 auto !important;
+    margin: 0 !important;
+  }
+
+  #caja-vista-previa {
+    padding: 8px 10px;
+    margin-bottom: 12px;
+    width: 100%;
+    box-sizing: border-box;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 6px;
+    overflow: hidden;
+  }
+
+  #vista-previa-derivada {
+    font-size: 11px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    min-width: 0;
+  }
+
+  #botones-accion {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+    width: 100%;
+    box-sizing: border-box;
+  }
+
+  #comprobar {
+    grid-column: span 2;
+    padding: 12px;
+    font-size: 14px;
+    width: 100%;
+    box-sizing: border-box;
+  }
+
+  #btn-pista,
+  #btn-siguiente {
+    padding: 10px 4px;
+    font-size: 12px;
+    width: 100%;
+    box-sizing: border-box;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  #box {
+    width: 100% !important;
+    max-width: 100% !important;
+    height: 280px;
+    box-sizing: border-box;
+    overflow: hidden;
+  }
+
+  body {
+    padding-bottom: 78px;
+  }
+
+  #navegacion-inferior {
+    width: 100%;
+    left: 0;
+    right: 0;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    padding: 6px 8px calc(6px + env(safe-area-inset-bottom, 6px));
+    box-sizing: border-box;
+  }
+
+  #navegacion-inferior button {
+    font-size: 10px;
+    gap: 2px;
+    width: 100%;
+    min-width: 0;
+  }
+
+  #navegacion-inferior button span:first-child {
+    font-size: 15px;
+  }
+}
+
+@media (max-width: 400px) {
+  .logo-title {
+    font-size: 15px;
+  }
+
+  .record-text {
+    display: none;
+  }
+
+  .lvl-tab {
+    padding: 6px 2px;
+    font-size: 10px;
+  }
+
+  #caja-enunciado {
+    padding: 10px 6px;
+    min-height: 68px;
+  }
+
+  #enunciado-funcion {
+    font-size: 20px;
+  }
 }

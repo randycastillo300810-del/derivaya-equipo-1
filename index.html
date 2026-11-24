@@ -30,11 +30,6 @@
 
         <!-- Indicadores de progreso rápido -->
         <div id="indicadores-estado" class="pill">
-          <div id="indicador-racha">
-            <span class="icon-star">🔥</span>
-            <strong id="valor-racha">0</strong>
-          </div>
-
           <div id="indicador-puntaje">
             <span class="icon-star">★</span>
             <span>Pts: <strong id="valor-puntaje">0</strong></span>
@@ -66,7 +61,6 @@
             <span id="etiqueta-nivel">Nivel 1: Polinomios</span>
             <span id="contador-funcion">Función #1/5</span>
           </div>
-          <button type="button" id="btn-otra-azar" class="btn-gray btn-sm">🔀 Otra al azar</button>
         </header>
 
         <!-- Barra de progreso del nivel -->
@@ -95,7 +89,7 @@
         <div id="contenedor-input">
           <span>f'(x) =</span>
           <math-field id="respuesta"
-            placeholder="Ej: 3x^2 - 3   ó   3(x^2 - 1)"
+            placeholder="Tu derivada aquí..."
             virtual-keyboard-toggle="false"
           ></math-field>
           <button type="button" id="btn-limpiar" class="btn-gray btn-sm" title="Limpiar entrada">✕</button>
@@ -238,7 +232,6 @@
 
       <div id="resumen-ronda">
         <p id="puntaje-final">Puntaje final: <strong id="valor-puntaje-final">0</strong></p>
-        <p id="racha-final">Racha de aciertos: <strong id="valor-racha-final">0</strong></p>
         <p id="record-final">Récord histórico: <strong id="valor-record-final">0</strong></p>
       </div>
 

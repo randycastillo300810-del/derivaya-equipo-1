@@ -62,13 +62,17 @@ derivaya-equipo-1/
 │   └── styles.css               # Estilos globales, temas oscuros, layout flex/grid y media queries
 ├── docs/
 │   ├── README.md                # Guía y lineamientos de documentación técnica del equipo
+│   ├── modulo-1-banco.md        # Informe técnico detallado del Módulo 1
+│   ├── modulo-2-correcion.md    # Informe técnico detallado del Módulo 2
+│   ├── modulo-3-grafica.md        # Informe técnico detallado del Módulo 3
 │   └── modulo-4-progreso.md     # Informe técnico detallado del Módulo 4
 ├── js/
 │   ├── main.js                  # Controlador central: orquestación de eventos, DOM, gamificación y persistencia
 │   └── modulos/
 │       ├── banco.js             # MÓDULO 1: Catálogo estructurado de funciones y pistas
 │       ├── correccion.js        # MÓDULO 2: Validación y equivalencia simbólica (Compute Engine)
-│       └── grafica.js           # MÓDULO 3: Renderizado y geometría interactiva (JSXGraph)
+│       ├── grafica.js           # MÓDULO 3: Renderizado y geometría interactiva (JSXGraph)
+│       └── progreso.js          # MÓDULO 4: Gestión del progreso, intentos y resumen de resultados
 ├── libs/                        # Dependencias locales auxiliares
 ├── index.html                   # Documento semántico principal (Single Page Application)
 └── README.md                    # Documentación general del repositorio
@@ -81,8 +85,6 @@ derivaya-equipo-1/
 | **Módulo 1** | `banco.js` | Sara | Provee la base de datos de reactivos dividida por niveles, con expresiones LaTeX, funciones JavaScript y pistas. |
 | **Módulo 2** | `correccion.js` | Vanessa | Procesa la entrada matemática del usuario, la compara simbólicamente con la solución esperada y emite el diagnóstico (`ok`, `valida`, `intentos`). |
 | **Módulo 3** | `grafica.js` | Mariandry | Administra el canvas de JSXGraph: dibuja la función, la recta tangente móvil, el glider interactivo y la gráfica del estudiante. |
-| **Módulo 4 / Líder** | `modulo-4-progreso.md` / `main.js` | Randy (Líder) | Informe técnico de progreso, ensamblado de submódulos, gamificación y persistencia multi-nivel. |
-
 ---
 
 ## 🛠️ Tecnologías y Librerías
@@ -136,12 +138,11 @@ http://localhost:8000  (o el puerto indicado por tu servidor local)
 
 La aplicación se encuentra configurada y desplegada continuamente a través de **Netlify**:  
 👉 **[derivaya.netlify.app](https://derivaya.netlify.app)**
-
 ---
 
 ## 👥 Equipo de Desarrollo (Equipo 1)
 
-* **Randy Castillo** — *Líder de Proyecto, Integración y Gamificación/Progreso (main.js)*
+* **Randy Castillo** — *Líder de Proyecto, Integración y Gamificación (main.js)*
 * **Sara** — *Desarrolladora Módulo 1 (banco.js)*
 * **Vanessa** — *Desarrolladora Módulo 2 (correccion.js)*
 * **Mariandry** — *Desarrolladora Módulo 3 (grafica.js)*

@@ -33,7 +33,7 @@ La plataforma implementa un entorno de gamificación con niveles progresivos de 
 
 ### 4. 🧠 Corrección Simbólica Robusta (CortexJS Compute Engine)
 * Evaluación algebraica exacta que reconoce expresiones matemáticamente equivalentes (ejemplo: $2x$, $x \cdot 2$, orden de sumandos, simplificaciones).
-* Aceptación flexible de nomenclatura en español e internacional ($\operatorname{sen}(x)$ y $\sin(x)$).
+* Aceptación flexible de nomenclatura en español e internacional.
 
 ### 5. 🏆 Gamificación y Persistencia Multi-Nivel
 * **Sistema de Intentos:** 2 intentos por cada ejercicio con badge visual dinámico.
@@ -104,7 +104,7 @@ Para ejecutar DerivaYa en tu máquina de desarrollo local, no se requiere Node.j
 
 ### Paso 1: Clonar el repositorio
 ```bash
-git clone https://github.com/randycastillo300810-del/derivaya-equipo-1t
+git clone https://github.com/randycastillo300810-del/derivaya-equipo-1
 cd derivaya-equipo-1
 ```
 

@@ -137,12 +137,12 @@ http://localhost:8000  (o el puerto indicado por tu servidor local)
 ## 🌐 Despliegue en Producción
 
 La aplicación se encuentra configurada y desplegada continuamente a través de **Netlify**.
-
+https://derivaya.netlify.app
 ---
 
 ## 👥 Equipo de Desarrollo (Equipo 1)
 
-* **Randy Castillo** — *Líder de Proyecto, Integración y Gamificación/Progreso (main.js)*
+* **Randy Castillo** — *Líder de Proyecto, Integración y Gamificación (main.js)*
 * **Sara** — *Desarrolladora Módulo 1 (banco.js)*
 * **Vanessa** — *Desarrolladora Módulo 2 (correccion.js)*
 * **Mariandry** — *Desarrolladora Módulo 3 (grafica.js)*
